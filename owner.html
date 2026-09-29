@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Owner Control Center Starpoint Garage">
+  <title>Owner Control Center | Starpoint Garage</title>
+  <style>
+    :root{--bg:#080808;--surface:#121212;--surface2:#181818;--line:#2b2b2b;--text:#f5f5f5;--muted:#8c8c8c;--ok:#b8efc9;--warn:#ffd79a;--danger:#ffb4b4;--shadow:0 28px 85px rgba(0,0,0,.42)}
+    *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.5}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .shell{width:min(1260px,calc(100% - 28px));margin:auto}.topbar{position:sticky;top:0;z-index:50;background:rgba(8,8,8,.93);backdrop-filter:blur(16px);border-bottom:1px solid #1e1e1e}.toprow{height:68px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.04em}.brand img{width:50px;height:36px;object-fit:contain}.top-actions{display:flex;gap:8px;align-items:center}.top-link{font-size:11px;color:#999;border:1px solid #333;border-radius:10px;padding:8px 10px}
+    .page{padding:30px 0 70px}.head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:20px}.eyebrow{text-transform:uppercase;letter-spacing:.16em;color:#737373;font-size:10px;font-weight:900}.head h1{font-size:clamp(31px,4.4vw,52px);letter-spacing:-.04em;line-height:1.02;margin-top:7px}.head p{max-width:560px;color:#929292}
+    .tabs{display:flex;gap:7px;overflow:auto;padding-bottom:5px;margin-bottom:20px}.tab{white-space:nowrap;border:1px solid #303030;background:#111;color:#888;border-radius:11px;padding:10px 14px;font-weight:900;font-size:12px}.tab.active{background:#fff;color:#000;border-color:#fff}.panel{display:none}.panel.active{display:block}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.stat{background:#121212;border:1px solid #292929;border-radius:16px;padding:17px}.stat span{display:block;color:#777;font-size:10px;margin-bottom:5px}.stat strong{font-size:25px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:#121212;border:1px solid #2b2b2b;border-radius:19px;padding:21px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px}.section-head h2,.card h2{font-size:21px}.muted{color:var(--muted)}.small{font-size:11px}
+    .field{margin-bottom:12px}.field label{display:block;color:#c1c1c1;font-size:11px;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;background:#090909;color:#fff;border:1px solid #363636;border-radius:11px;padding:11px 12px;outline:none}.field textarea{min-height:78px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:#777}.inline{display:grid;grid-template-columns:1fr 1fr;gap:10px}.inline3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.check{display:flex;gap:8px;align-items:flex-start;color:#aaa;font-size:11px;margin:8px 0 13px}.check input{margin-top:3px}
+    .btn{border:1px solid transparent;border-radius:11px;padding:10px 13px;font-weight:900}.btn.primary{background:#fff;color:#050505}.btn.secondary{background:#171717;color:#fff;border-color:#353535}.btn.danger{background:#2a1111;color:#ffb4b4;border-color:#4d1e1e}.btn.warn{background:#261d0e;color:#ffd79a;border-color:#50401f}.btn.tiny{font-size:10px;padding:7px 9px}.btn.full{width:100%}.btn:disabled{opacity:.48;cursor:not-allowed}
+    .message{display:none;border-radius:11px;padding:10px 12px;margin-bottom:13px;font-size:11px}.message.show{display:block}.message.error{background:#2a1111;color:var(--danger)}.message.ok{background:#102219;color:var(--ok)}
+    .toolbar{display:grid;grid-template-columns:1fr 180px;gap:9px;margin-bottom:12px}.list{display:grid;gap:9px}.item{background:#0d0d0d;border:1px solid #2a2a2a;border-radius:15px;padding:15px}.item-head{display:flex;justify-content:space-between;gap:13px;align-items:flex-start}.item h3{font-size:14px}.sub{color:#777;font-size:10px;margin-top:3px}.status{font-size:9px;text-transform:uppercase;letter-spacing:.08em;border:1px solid #3a3a3a;color:#bbb;border-radius:999px;padding:4px 7px;white-space:nowrap}.status.active,.status.paid,.status.completed{color:#b8efc9;border-color:#285039}.status.suspended,.status.deleted,.status.void,.status.moderated{color:#ffb4b4;border-color:#562323}.status.registered,.status.open{color:#ffd79a;border-color:#5a4525}.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:11px}.fact{background:#161616;border-radius:9px;padding:9px}.fact span{display:block;color:#696969;font-size:9px}.fact b{font-size:11px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.empty{border:1px dashed #343434;border-radius:14px;padding:25px;text-align:center;color:#737373}.loading{text-align:center;color:#777;padding:25px}
+    .service-card{background:#0d0d0d;border:1px solid #2a2a2a;border-radius:16px;padding:16px}.service-card h3{font-size:15px}.service-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:13px}.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.price-box{background:#141414;border:1px solid #292929;border-radius:11px;padding:10px}.price-box span{font-size:9px;color:#777;display:block}.price-box input{width:100%;background:#090909;color:#fff;border:1px solid #303030;border-radius:8px;padding:8px;margin-top:6px}
+    .reward-card,.level-card,.warranty-card,.banner-card,.report-card,.audit-card{background:#0d0d0d;border:1px solid #2a2a2a;border-radius:15px;padding:15px}.reward-card h3,.level-card h3{font-size:14px}.media{width:100%;max-height:260px;object-fit:contain;background:#070707;border-radius:11px;margin-top:10px}.media-placeholder{height:120px;border:1px dashed #333;border-radius:11px;display:grid;place-items:center;color:#666;font-size:11px;margin-top:10px}.audit-data{margin-top:9px;background:#080808;border:1px solid #262626;border-radius:9px;padding:9px;font-size:10px;color:#8e8e8e;overflow:auto;max-height:130px;white-space:pre-wrap}
+    .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);z-index:80;padding:15px;overflow:auto}.modal-bg.open{display:grid;place-items:center}.modal{width:min(100%,560px);background:#111;border:1px solid #333;border-radius:21px;box-shadow:var(--shadow);overflow:hidden}.modal-head{display:flex;justify-content:space-between;align-items:center;padding:17px 19px;border-bottom:1px solid #292929}.modal-body{padding:19px}.x{width:35px;height:35px;border:1px solid #333;background:#171717;color:#fff;border-radius:9px;font-size:18px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);opacity:0;background:#fff;color:#000;border-radius:11px;padding:11px 14px;font-size:11px;font-weight:900;z-index:100;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:980px){.stats{grid-template-columns:1fr 1fr}.grid,.grid3{grid-template-columns:1fr}.head{align-items:flex-start;flex-direction:column}.price-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:580px){.shell{width:min(100% - 18px,1260px)}.toprow{height:61px}.brand span{font-size:11px}.top-link:nth-child(1){display:none}.page{padding-top:20px}.stats{grid-template-columns:1fr 1fr}.toolbar,.inline,.inline3,.service-grid{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.card{padding:17px}.price-grid{grid-template-columns:1fr 1fr}.modal-bg{padding:8px;align-items:end}.modal{border-radius:20px 20px 12px 12px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell toprow">
+      <a class="brand" href="./"><img src="IMG_0461.png" alt="Starpoint Garage"><span>OWNER CONTROL CENTER</span></a>
+      <div class="top-actions"><a class="top-link" href="./staff.html">Staff Dashboard</a><button class="top-link" id="logoutButton" type="button">Logout</button></div>
+    </div>
+  </header>
+
+  <main class="shell page">
+    <div class="head">
+      <div><div class="eyebrow">Owner / Admin</div><h1 id="ownerGreeting">Control Center.</h1></div>
+      <p>Kelola member, point, layanan, harga, reward, membership, warranty, banner, moderasi, dan jejak audit Starpoint Garage.</p>
+    </div>
+
+    <nav class="tabs">
+      <button class="tab active" data-panel="overview" type="button">Ringkasan</button>
+      <button class="tab" data-panel="members" type="button">Member</button>
+      <button class="tab" data-panel="services" type="button">Layanan & Harga</button>
+      <button class="tab" data-panel="rewards" type="button">Reward / Promo</button>
+      <button class="tab" data-panel="levels" type="button">Membership</button>
+      <button class="tab" data-panel="warranties" type="button">Warranty</button>
+      <button class="tab" data-panel="banners" type="button">Banner</button>
+      <button class="tab" data-panel="moderation" type="button">Moderasi</button>
+      <button class="tab" data-panel="audit" type="button">Audit Log</button>
+    </nav>
+    <div class="message" id="pageMessage"></div>
+
+    <section class="panel active" id="overviewPanel">
+      <div class="stats">
+        <div class="stat"><span>Total Member</span><strong id="statMembers">0</strong></div>
+        <div class="stat"><span>Member Aktif</span><strong id="statActive">0</strong></div>
+        <div class="stat"><span>Reward Aktif</span><strong id="statRewards">0</strong></div>
+        <div class="stat"><span>Open Reports</span><strong id="statReports">0</strong></div>
+      </div>
+      <div class="grid">
+        <article class="card"><div class="section-head"><div><div class="eyebrow">Control</div><h2>Akses Cepat</h2></div></div><div style="display:grid;gap:8px"><button class="btn primary full" data-go="members" type="button">Kelola Member & Point</button><button class="btn secondary full" data-go="services" type="button">Atur Layanan & Harga</button><button class="btn secondary full" data-go="rewards" type="button">Atur Reward / Promo</button><button class="btn secondary full" data-go="moderation" type="button">Buka Moderasi</button></div></article>
+        <article class="card"><div class="section-head"><div><div class="eyebrow">System</div><h2>Status Data</h2></div></div><div class="list"><div class="item"><div class="item-head"><h3>Warranty Coating</h3><b id="statWarranties">0</b></div></div><div class="item"><div class="item-head"><h3>Banner Aktif</h3><b id="statBanners">0</b></div></div><div class="item"><div class="item-head"><h3>Audit Entries</h3><b id="statAudit">0</b></div></div></div></article>
+      </div>
+    </section>
+
+    <section class="panel" id="membersPanel">
+      <article class="card">
+        <div class="section-head"><div><div class="eyebrow">Member Management</div><h2>Daftar Member</h2></div><button class="btn secondary tiny" id="refreshMembers" type="button">Refresh</button></div>
+        <div class="toolbar"><input id="memberSearch" placeholder="Cari nama, username, email, member code"><select id="memberStatusFilter"><option value="">Semua status</option><option value="registered">Registered</option><option value="active">Active</option><option value="suspended">Suspended</option></select></div>
+        <div id="memberList" class="loading">Memuat member...</div>
+      </article>
+    </section>
+
+    <section class="panel" id="servicesPanel">
+      <article class="card">
+        <div class="section-head"><div><div class="eyebrow">Service Configuration</div><h2>Layanan & Harga</h2></div><button class="btn secondary tiny" id="refreshServices" type="button">Refresh</button></div>
+        <div id="serviceList" class="loading">Memuat layanan...</div>
+      </article>
+    </section>
+
+    <section class="panel" id="rewardsPanel">
+      <div class="grid">
+        <article class="card">
+          <div class="section-head"><div><div class="eyebrow">Reward Catalog</div><h2 id="rewardFormTitle">Reward Baru</h2></div><button class="btn secondary tiny" id="clearReward" type="button">Reset</button></div>
+          <div class="message" id="rewardMessage"></div>
+          <form id="rewardForm">
+            <input id="rewardId" type="hidden">
+            <div class="inline"><div class="field"><label for="rewardCode">Code</label><input id="rewardCode" required placeholder="voucher_50k"></div><div class="field"><label for="rewardTitle">Nama reward</label><input id="rewardTitle" required></div></div>
+            <div class="inline"><div class="field"><label for="rewardType">Tipe</label><select id="rewardType"><option value="service">Service</option><option value="voucher">Voucher</option><option value="addon">Add-on</option></select></div><div class="field"><label for="rewardService">Layanan</label><select id="rewardService"><option value="">Tanpa layanan</option></select></div></div>
+            <div class="inline3"><div class="field"><label for="rewardVehicle">Kategori</label><select id="rewardVehicle"><option value="">Semua</option><option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option><option value="big_bike">Big Bike</option><option value="luxury">Luxury</option></select></div><div class="field"><label for="rewardPoints">Point cost</label><input id="rewardPoints" type="number" min="1" required></div><div class="field"><label for="rewardVoucher">Nilai voucher</label><input id="rewardVoucher" type="number" min="0" value="0"></div></div>
+            <div class="inline3"><div class="field"><label for="rewardMinTx">Min transaksi</label><input id="rewardMinTx" type="number" min="0" value="0"></div><div class="field"><label for="rewardValidity">Masa berlaku (hari)</label><input id="rewardValidity" type="number" min="1" value="30"></div><div class="field"><label for="rewardSort">Urutan</label><input id="rewardSort" type="number" value="0"></div></div>
+            <label class="check"><input id="rewardActive" type="checkbox" checked><span>Reward aktif dan dapat dilihat member.</span></label>
+            <button class="btn primary full" id="rewardSubmit" type="submit">Simpan Reward</button>
+          </form>
+        </article>
+        <article class="card"><div class="section-head"><div><div class="eyebrow">Catalog</div><h2>Reward / Promo Aktif</h2></div><button class="btn secondary tiny" id="refreshRewards" type="button">Refresh</button></div><div id="rewardList" class="loading">Memuat reward...</div></article>
+      </div>
+    </section>
+
+    <section class="panel" id="levelsPanel">
+      <article class="card"><div class="section-head"><div><div class="eyebrow">Membership Rules</div><h2>Level Membership</h2></div></div><p class="muted small" style="margin-bottom:13px">Perubahan threshold dan benefit memengaruhi perhitungan membership member berikutnya.</p><div id="levelList" class="loading">Memuat level...</div></article>
+    </section>
+
+    <section class="panel" id="warrantiesPanel">
+      <article class="card"><div class="section-head"><div><div class="eyebrow">Nano Coating</div><h2>Warranty</h2></div><button class="btn secondary tiny" id="refreshWarranties" type="button">Refresh</button></div><div id="warrantyList" class="loading">Memuat warranty...</div></article>
+    </section>
+
+    <section class="panel" id="bannersPanel">
+      <div class="grid">
+        <article class="card">
+          <div class="section-head"><div><div class="eyebrow">Homepage Promotion</div><h2 id="bannerFormTitle">Banner Baru</h2></div><button class="btn secondary tiny" id="clearBanner" type="button">Reset</button></div>
+          <div class="message" id="bannerMessage"></div>
+          <form id="bannerForm">
+            <input id="bannerId" type="hidden"><input id="bannerExistingPath" type="hidden">
+            <div class="field"><label for="bannerTitle">Judul</label><input id="bannerTitle" required></div>
+            <div class="field"><label for="bannerImage">Gambar banner</label><input id="bannerImage" type="file" accept="image/jpeg,image/png,image/webp"><div class="small muted" style="margin-top:5px">JPG, PNG, atau WebP. Maksimal 5 MB.</div></div>
+            <div class="inline"><div class="field"><label for="bannerAction">Aksi</label><select id="bannerAction"><option value="none">Tidak ada</option><option value="url">URL</option><option value="whatsapp">WhatsApp</option><option value="service">Service</option><option value="route">Route</option></select></div><div class="field"><label for="bannerActionValue">Nilai aksi</label><input id="bannerActionValue" placeholder="URL / service id / route"></div></div>
+            <div class="inline3"><div class="field"><label for="bannerSort">Urutan</label><input id="bannerSort" type="number" value="0"></div><div class="field"><label for="bannerStart">Mulai WIB</label><input id="bannerStart" type="datetime-local"></div><div class="field"><label for="bannerEnd">Selesai WIB</label><input id="bannerEnd" type="datetime-local"></div></div>
+            <label class="check"><input id="bannerActive" type="checkbox" checked><span>Banner aktif.</span></label>
+            <button class="btn primary full" id="bannerSubmit" type="submit">Simpan Banner</button>
+          </form>
+        </article>
+        <article class="card"><div class="section-head"><div><div class="eyebrow">Banner List</div><h2>Banner Tersimpan</h2></div><button class="btn secondary tiny" id="refreshBanners" type="button">Refresh</button></div><div id="bannerList" class="loading">Memuat banner...</div></article>
+      </div>
+    </section>
+
+    <section class="panel" id="moderationPanel">
+      <div class="grid">
+        <article class="card"><div class="section-head"><div><div class="eyebrow">Reports</div><h2>Story Reports</h2></div><button class="btn secondary tiny" id="refreshReports" type="button">Refresh</button></div><div id="reportList" class="loading">Memuat report...</div></article>
+        <article class="card"><div class="section-head"><div><div class="eyebrow">Community</div><h2>Story Terbaru</h2></div><button class="btn secondary tiny" id="refreshStories" type="button">Refresh</button></div><div id="storyList" class="loading">Memuat story...</div></article>
+      </div>
+    </section>
+
+    <section class="panel" id="auditPanel">
+      <article class="card"><div class="section-head"><div><div class="eyebrow">Audit Trail</div><h2>Jejak Perubahan Owner/Staff</h2></div><button class="btn secondary tiny" id="refreshAudit" type="button">Refresh</button></div><div class="toolbar"><input id="auditSearch" placeholder="Cari action, entity, actor"><select id="auditType"><option value="">Semua entity</option><option value="member">Member</option><option value="service">Service</option><option value="service_price">Service Price</option><option value="reward_catalog">Reward</option><option value="membership_level">Membership</option><option value="banner">Banner</option><option value="story">Story</option><option value="coating_warranty">Warranty</option><option value="payment">Payment</option><option value="booking">Booking</option></select></div><div id="auditList" class="loading">Memuat audit log...</div></article>
+    </section>
+  </main>
+
+  <div class="modal-bg" id="memberModal">
+    <div class="modal"><div class="modal-head"><b>Kelola Member</b><button class="x" data-close="memberModal" type="button">×</button></div><div class="modal-body">
+      <div class="message" id="memberMessage"></div><input id="manageMemberId" type="hidden">
+      <div id="memberIdentity" class="item" style="margin-bottom:13px"></div>
+      <div class="field"><label for="manageStatus">Status member</label><select id="manageStatus"><option value="registered">Registered</option><option value="active">Active</option><option value="suspended">Suspended</option></select></div>
+      <div class="field"><label for="statusReason">Alasan perubahan status</label><input id="statusReason" placeholder="Wajib disarankan untuk suspend"></div>
+      <button class="btn secondary full" id="saveStatus" type="button">Simpan Status</button>
+      <hr style="border:0;border-top:1px solid #292929;margin:16px 0">
+      <div class="inline"><div class="field"><label for="pointDelta">Penyesuaian point</label><input id="pointDelta" type="number" placeholder="+10 / -5"></div><div class="field"><label for="pointReason">Keterangan</label><input id="pointReason" placeholder="Alasan penyesuaian"></div></div>
+      <button class="btn secondary full" id="adjustPoints" type="button">Sesuaikan Reward Point</button>
+      <hr style="border:0;border-top:1px solid #292929;margin:16px 0">
+      <div class="inline"><div class="field"><label for="memberBirthDate">Tanggal lahir</label><input id="memberBirthDate" type="date"></div><div class="field"><label for="birthReason">Alasan koreksi</label><input id="birthReason" placeholder="Opsional"></div></div>
+      <button class="btn secondary full" id="saveBirthDate" type="button">Koreksi Tanggal Lahir</button>
+    </div></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase=createClient("https://lscwmlxsvmakhnzknvrr.supabase.co","sb_publishable_xP2C7pPrFpjzbo4WS-C2sw_pYi5hHph");
+    let session=null,owner=null,members=[],memberSummary=new Map(),services=[],prices=[],rewards=[],levels=[],warranties=[],banners=[],reports=[],stories=[],audits=[];
+    const vehicleCats=["small","medium","large","big_bike","luxury"];
+    const rupiah=n=>"Rp"+Number(n||0).toLocaleString("id-ID");
+    const dt=v=>v?new Intl.DateTimeFormat("id-ID",{timeZone:"Asia/Jakarta",day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(v)):"-";
+    const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+    const localInput=v=>{if(!v)return"";const d=new Date(v),p=new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Jakarta",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).format(d);return p.replace(" ","T")};
+    const wibIso=v=>v?(/T\d{2}:\d{2}$/.test(v)?v+":00+07:00":v):null;
+
+    function message(id,text,type="error"){const e=document.getElementById(id);e.textContent=text;e.className="message show "+type}
+    function clearMessage(id){const e=document.getElementById(id);e.textContent="";e.className="message"}
+    function toast(text){const e=document.getElementById("toast");e.textContent=text;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2400)}
+    function busy(btn,on,busyText,normal){btn.disabled=on;btn.textContent=on?busyText:normal}
+    function openModal(id){document.getElementById(id).classList.add("open")}
+    function closeModal(id){document.getElementById(id).classList.remove("open")}
+    function rpcCode(error){const m=(error?.message||"").toUpperCase();const list=["OWNER_ADMIN_REQUIRED","MEMBER_NOT_FOUND","INVALID_POINT_ADJUSTMENT","POINT_BALANCE_CANNOT_BE_NEGATIVE","INVALID_BIRTH_DATE","INVALID_SERVICE_CONFIG","SERVICE_NOT_FOUND","INVALID_PRICE","INVALID_REWARD_CODE","REWARD_TITLE_REQUIRED","INVALID_REWARD_TYPE","INVALID_REWARD_VALUES","REWARD_SERVICE_REQUIRED","VOUCHER_AMOUNT_REQUIRED","REWARD_NOT_FOUND","REWARD_CODE_ALREADY_EXISTS","INVALID_MEMBERSHIP_CONFIG","MEMBERSHIP_LEVEL_NOT_FOUND","INVALID_WARRANTY_STATUS","WARRANTY_NOT_FOUND","BANNER_TITLE_IMAGE_REQUIRED","INVALID_BANNER_ACTION","INVALID_BANNER_SCHEDULE","BANNER_NOT_FOUND","INVALID_MODERATION_ACTION","MODERATION_REASON_REQUIRED","STORY_NOT_FOUND","INVALID_REPORT_STATUS","REPORT_NOT_FOUND"];return list.find(x=>m.includes(x))||"REQUEST_FAILED"}
+    function rpcText(c){return({OWNER_ADMIN_REQUIRED:"Akses Owner/Admin diperlukan.",MEMBER_NOT_FOUND:"Member tidak ditemukan.",INVALID_POINT_ADJUSTMENT:"Delta point dan keterangan wajib valid.",POINT_BALANCE_CANNOT_BE_NEGATIVE:"Saldo point tidak boleh menjadi negatif.",INVALID_BIRTH_DATE:"Tanggal lahir tidak valid.",INVALID_SERVICE_CONFIG:"Konfigurasi layanan tidak valid.",SERVICE_NOT_FOUND:"Layanan tidak ditemukan.",INVALID_PRICE:"Harga tidak valid.",INVALID_REWARD_CODE:"Kode reward hanya huruf kecil, angka, underscore (3–50 karakter).",REWARD_TITLE_REQUIRED:"Nama reward wajib diisi.",INVALID_REWARD_TYPE:"Tipe reward tidak valid.",INVALID_REWARD_VALUES:"Nilai reward belum valid.",REWARD_SERVICE_REQUIRED:"Reward tipe service wajib memilih layanan.",VOUCHER_AMOUNT_REQUIRED:"Reward voucher wajib memiliki nilai voucher.",REWARD_NOT_FOUND:"Reward tidak ditemukan.",REWARD_CODE_ALREADY_EXISTS:"Kode reward sudah digunakan.",INVALID_MEMBERSHIP_CONFIG:"Konfigurasi membership tidak valid.",MEMBERSHIP_LEVEL_NOT_FOUND:"Level membership tidak ditemukan.",INVALID_WARRANTY_STATUS:"Status warranty tidak valid.",WARRANTY_NOT_FOUND:"Warranty tidak ditemukan.",BANNER_TITLE_IMAGE_REQUIRED:"Judul dan gambar banner wajib ada.",INVALID_BANNER_ACTION:"Aksi banner tidak valid.",INVALID_BANNER_SCHEDULE:"Jadwal banner tidak valid.",BANNER_NOT_FOUND:"Banner tidak ditemukan.",MODERATION_REASON_REQUIRED:"Alasan moderasi wajib diisi.",STORY_NOT_FOUND:"Story tidak ditemukan.",REPORT_NOT_FOUND:"Report tidak ditemukan.",REQUEST_FAILED:"Permintaan belum berhasil."})[c]||"Permintaan belum berhasil."}
+
+    async function requireOwner(){
+      const {data}=await supabase.auth.getSession();session=data.session;if(!session){location.replace("./staff.html");return false}
+      const {data:profile,error}=await supabase.from("staff_profiles").select("user_id,display_name,email,role,active").eq("user_id",session.user.id).maybeSingle();
+      if(error||!profile?.active||profile.role!=="owner_admin"){location.replace("./staff.html");return false}
+      owner=profile;document.getElementById("ownerGreeting").textContent="Halo, "+profile.display_name+".";return true
+    }
+    function setPanel(name){document.querySelectorAll(".tab").forEach(e=>e.classList.toggle("active",e.dataset.panel===name));document.querySelectorAll(".panel").forEach(e=>e.classList.toggle("active",e.id===name+"Panel"));if(name==="members")loadMembers();if(name==="services")loadServices();if(name==="rewards")loadRewards();if(name==="levels")loadLevels();if(name==="warranties")loadWarranties();if(name==="banners")loadBanners();if(name==="moderation")Promise.all([loadReports(),loadStories()]);if(name==="audit")loadAudit();window.scrollTo({top:0,behavior:"smooth"})}
+
+    async function loadOverview(){
+      const [m,r,w,b,rep,a]=await Promise.all([
+        supabase.from("member_profiles").select("user_id,status"),
+        supabase.from("reward_catalog").select("id,active"),
+        supabase.from("coating_warranties").select("id,status"),
+        supabase.from("banners").select("id,active"),
+        supabase.from("story_reports").select("id,status"),
+        supabase.from("audit_logs").select("id")
+      ]);
+      const ms=m.data||[],rs=r.data||[],ws=w.data||[],bs=b.data||[],reps=rep.data||[],as=a.data||[];
+      document.getElementById("statMembers").textContent=ms.filter(x=>x.status!=="deleted").length;
+      document.getElementById("statActive").textContent=ms.filter(x=>x.status==="active").length;
+      document.getElementById("statRewards").textContent=rs.filter(x=>x.active).length;
+      document.getElementById("statReports").textContent=reps.filter(x=>x.status==="open").length;
+      document.getElementById("statWarranties").textContent=ws.length;
+      document.getElementById("statBanners").textContent=bs.filter(x=>x.active).length;
+      document.getElementById("statAudit").textContent=as.length;
+    }
+
+    async function loadMembers(){
+      const t=document.getElementById("memberList");t.className="loading";t.textContent="Memuat member...";
+      const [m,s]=await Promise.all([
+        supabase.from("member_profiles").select("user_id,member_code,username,email,full_name,birth_date,status,onboarding_completed,created_at,activated_at").neq("status","deleted").order("created_at",{ascending:false}).limit(300),
+        supabase.from("member_membership_summary").select("member_id,reward_points,qualifying_points_12m,level")
+      ]);
+      if(m.error){t.className="empty";t.textContent="Member belum dapat dimuat.";return}
+      members=m.data||[];memberSummary=new Map((s.data||[]).map(x=>[x.member_id,x]));renderMembers()
+    }
+    function renderMembers(){
+      const q=document.getElementById("memberSearch").value.trim().toLowerCase(),status=document.getElementById("memberStatusFilter").value;let rows=members;
+      if(status)rows=rows.filter(x=>x.status===status);
+      if(q)rows=rows.filter(x=>[x.member_code,x.username,x.email,x.full_name].some(v=>String(v||"").toLowerCase().includes(q)));
+      const t=document.getElementById("memberList");if(!rows.length){t.className="empty";t.textContent="Tidak ada member yang cocok.";return}t.className="list";t.innerHTML=rows.map(x=>{const s=memberSummary.get(x.user_id)||{};return '<div class="item"><div class="item-head"><div><h3>'+esc(x.full_name||"Member")+' · '+esc(x.member_code||"-")+'</h3><div class="sub">@'+esc(x.username||"-")+' · '+esc(x.email||"-")+'</div></div><span class="status '+x.status+'">'+esc(x.status)+'</span></div><div class="facts"><div class="fact"><span>Level</span><b>'+esc(String(s.level||"classic").toUpperCase())+'</b></div><div class="fact"><span>Reward Point</span><b>'+Number(s.reward_points||0).toLocaleString("id-ID")+'</b></div><div class="fact"><span>Qualifying 12M</span><b>'+Number(s.qualifying_points_12m||0).toLocaleString("id-ID")+'</b></div><div class="fact"><span>Onboarding</span><b>'+(x.onboarding_completed?"Selesai":"Belum")+'</b></div></div><div class="actions"><button class="btn secondary tiny manageMemberBtn" data-id="'+x.user_id+'" type="button">Kelola Member</button></div></div>'}).join("");document.querySelectorAll(".manageMemberBtn").forEach(b=>b.addEventListener("click",()=>openMemberManager(b.dataset.id)))
+    }
+    function openMemberManager(id){
+      clearMessage("memberMessage");const m=members.find(x=>x.user_id===id);if(!m)return;const s=memberSummary.get(id)||{};document.getElementById("manageMemberId").value=id;document.getElementById("manageStatus").value=m.status;document.getElementById("statusReason").value="";document.getElementById("pointDelta").value="";document.getElementById("pointReason").value="";document.getElementById("memberBirthDate").value=m.birth_date||"";document.getElementById("birthReason").value="";document.getElementById("memberIdentity").innerHTML='<div class="item-head"><div><h3>'+esc(m.full_name||"Member")+'</h3><div class="sub">'+esc(m.member_code||"-")+' · @'+esc(m.username||"-")+'</div></div><span class="status '+m.status+'">'+esc(m.status)+'</span></div><div class="facts"><div class="fact"><span>Reward Point</span><b>'+Number(s.reward_points||0).toLocaleString("id-ID")+'</b></div><div class="fact"><span>Level</span><b>'+esc(String(s.level||"classic").toUpperCase())+'</b></div></div>';openModal("memberModal")
+    }
+    async function saveMemberStatus(){
+      clearMessage("memberMessage");const id=document.getElementById("manageMemberId").value,status=document.getElementById("manageStatus").value,reason=document.getElementById("statusReason").value.trim()||null;
+      if(status==="suspended"&&!reason&&!confirm("Suspend tanpa alasan tertulis?"))return;
+      const {error}=await supabase.rpc("owner_update_member_status",{p_member_id:id,p_status:status,p_reason:reason});if(error)return message("memberMessage",rpcText(rpcCode(error)));toast("Status member diperbarui.");await loadMembers();openMemberManager(id);await loadOverview()
+    }
+    async function adjustMemberPoints(){
+      clearMessage("memberMessage");const id=document.getElementById("manageMemberId").value,delta=Number(document.getElementById("pointDelta").value),description=document.getElementById("pointReason").value.trim();
+      if(!delta||!description)return message("memberMessage","Isi delta point dan keterangan.");const {data,error}=await supabase.rpc("owner_adjust_member_points",{p_member_id:id,p_delta:delta,p_description:description});if(error)return message("memberMessage",rpcText(rpcCode(error)));toast("Point disesuaikan. Saldo baru: "+Number(data||0).toLocaleString("id-ID"));await loadMembers();openMemberManager(id)
+    }
+    async function saveMemberBirth(){
+      clearMessage("memberMessage");const id=document.getElementById("manageMemberId").value,date=document.getElementById("memberBirthDate").value,reason=document.getElementById("birthReason").value.trim()||null;if(!date)return message("memberMessage","Tanggal lahir wajib diisi.");
+      const {error}=await supabase.rpc("owner_update_member_birth_date",{p_member_id:id,p_birth_date:date,p_reason:reason});if(error)return message("memberMessage",rpcText(rpcCode(error)));toast("Tanggal lahir diperbarui.");await loadMembers();openMemberManager(id)
+    }
+
+    async function loadServices(){
+      const t=document.getElementById("serviceList");t.className="loading";t.textContent="Memuat layanan...";
+      const [s,p]=await Promise.all([supabase.from("services").select("*").order("sort_order"),supabase.from("service_prices").select("*").order("created_at")]);if(s.error){t.className="empty";t.textContent="Layanan belum dapat dimuat.";return}services=s.data||[];prices=p.data||[];renderServices();syncServiceOptions()
+    }
+    function priceFor(serviceId,cat){return prices.find(x=>x.service_id===serviceId&&x.vehicle_category===cat)}
+    function genericPrice(serviceId){return prices.find(x=>x.service_id===serviceId&&x.vehicle_category===null)}
+    function renderServices(){
+      const t=document.getElementById("serviceList");if(!services.length){t.className="empty";t.textContent="Belum ada layanan.";return}t.className="list";t.innerHTML=services.map(s=>'<div class="service-card" data-service="'+s.id+'"><div class="item-head"><div><h3>'+esc(s.name_id)+'</h3><div class="sub">'+esc(s.code)+' · '+esc(s.duration_label||"Tanpa label durasi")+'</div></div><span class="status '+(s.active?"active":"suspended")+'">'+(s.active?"ACTIVE":"OFF")+'</span></div><div class="service-grid"><label class="check"><input class="svcActive" type="checkbox" '+(s.active?"checked":"")+'><span>Active</span></label><label class="check"><input class="svcBooking" type="checkbox" '+(s.booking_enabled?"checked":"")+'><span>Booking enabled</span></label><div class="field"><label>Capacity default</label><input class="svcCapacity" type="number" min="1" max="50" value="'+Number(s.capacity_default||1)+'"></div><div class="field"><label>Durasi menit (kosong = konsultasi)</label><input class="svcDuration" type="number" min="1" value="'+(s.duration_minutes??"")+'"></div><label class="check"><input class="svcDeposit" type="checkbox" '+(s.requires_deposit?"checked":"")+'><span>Requires DP</span></label><div class="field"><label>Minimum DP</label><input class="svcMinDeposit" type="number" min="0" value="'+Number(s.minimum_deposit||0)+'"></div></div><button class="btn secondary full saveService" data-id="'+s.id+'" type="button">Simpan Konfigurasi</button><div class="price-grid">'+vehicleCats.map(cat=>{const p=priceFor(s.id,cat);return '<div class="price-box"><span>'+esc(cat.replace("_"," "))+'</span><input class="priceInput" data-cat="'+cat+'" type="number" min="0" value="'+(p?.amount??"")+'" placeholder="Rp"><label class="check" style="margin:7px 0 0"><input class="priceActive" data-cat="'+cat+'" type="checkbox" '+(p?.active!==false?"checked":"")+'><span>aktif</span></label></div>'}).join("")+'<div class="price-box"><span>generic / all</span><input class="priceInput" data-cat="" type="number" min="0" value="'+(genericPrice(s.id)?.amount??"")+'" placeholder="Rp"><label class="check" style="margin:7px 0 0"><input class="priceActive" data-cat="" type="checkbox" '+(genericPrice(s.id)?.active!==false?"checked":"")+'><span>aktif</span></label></div></div><button class="btn primary full savePrices" data-id="'+s.id+'" style="margin-top:10px" type="button">Simpan Harga</button></div>').join("");
+      document.querySelectorAll(".saveService").forEach(b=>b.addEventListener("click",()=>saveService(b.dataset.id)));document.querySelectorAll(".savePrices").forEach(b=>b.addEventListener("click",()=>savePrices(b.dataset.id)))
+    }
+    async function saveService(id){
+      const box=document.querySelector('[data-service="'+id+'"]'),duration=box.querySelector(".svcDuration").value;const {error}=await supabase.rpc("owner_update_service_config",{p_service_id:id,p_active:box.querySelector(".svcActive").checked,p_booking_enabled:box.querySelector(".svcBooking").checked,p_capacity_default:Number(box.querySelector(".svcCapacity").value),p_duration_minutes:duration?Number(duration):null,p_requires_deposit:box.querySelector(".svcDeposit").checked,p_minimum_deposit:Number(box.querySelector(".svcMinDeposit").value||0)});if(error)return message("pageMessage",rpcText(rpcCode(error)));toast("Konfigurasi layanan disimpan.");await loadServices()
+    }
+    async function savePrices(id){
+      const box=document.querySelector('[data-service="'+id+'"]'),inputs=[...box.querySelectorAll(".priceInput")];for(const input of inputs){if(input.value==="")continue;const cat=input.dataset.cat||null,active=box.querySelector('.priceActive[data-cat="'+(input.dataset.cat||"")+'"]').checked;const {error}=await supabase.rpc("owner_update_service_price",{p_service_id:id,p_vehicle_category:cat,p_amount:Number(input.value),p_price_label:null,p_active:active});if(error)return message("pageMessage",rpcText(rpcCode(error)))}toast("Harga layanan disimpan.");await loadServices()
+    }
+    function syncServiceOptions(){const opts='<option value="">Tanpa layanan</option>'+services.map(s=>'<option value="'+s.id+'">'+esc(s.name_id)+'</option>').join("");document.getElementById("rewardService").innerHTML=opts}
+
+    async function loadRewards(){
+      const t=document.getElementById("rewardList");t.className="loading";t.textContent="Memuat reward...";const {data,error}=await supabase.from("reward_catalog").select("*").order("sort_order").order("created_at");if(error){t.className="empty";t.textContent="Reward belum dapat dimuat.";return}rewards=data||[];renderRewards();document.getElementById("statRewards").textContent=rewards.filter(x=>x.active).length
+    }
+    function renderRewards(){
+      const t=document.getElementById("rewardList");if(!rewards.length){t.className="empty";t.textContent="Belum ada reward.";return}t.className="list";t.innerHTML=rewards.map(r=>'<div class="reward-card"><div class="item-head"><div><h3>'+esc(r.title_id)+'</h3><div class="sub">'+esc(r.code)+' · '+esc(r.reward_type)+'</div></div><span class="status '+(r.active?"active":"suspended")+'">'+(r.active?"ACTIVE":"OFF")+'</span></div><div class="facts"><div class="fact"><span>Point Cost</span><b>'+Number(r.points_cost).toLocaleString("id-ID")+'</b></div><div class="fact"><span>Voucher</span><b>'+rupiah(r.voucher_amount||0)+'</b></div><div class="fact"><span>Min Tx</span><b>'+rupiah(r.min_transaction||0)+'</b></div><div class="fact"><span>Validity</span><b>'+r.validity_days+' hari</b></div></div><div class="actions"><button class="btn secondary tiny editReward" data-id="'+r.id+'" type="button">Edit</button></div></div>').join("");document.querySelectorAll(".editReward").forEach(b=>b.addEventListener("click",()=>fillReward(b.dataset.id)))
+    }
+    function clearReward(){document.getElementById("rewardForm").reset();document.getElementById("rewardId").value="";document.getElementById("rewardActive").checked=true;document.getElementById("rewardValidity").value=30;document.getElementById("rewardSort").value=0;document.getElementById("rewardFormTitle").textContent="Reward Baru";clearMessage("rewardMessage")}
+    function fillReward(id){const r=rewards.find(x=>x.id===id);if(!r)return;document.getElementById("rewardId").value=r.id;document.getElementById("rewardCode").value=r.code;document.getElementById("rewardTitle").value=r.title_id;document.getElementById("rewardType").value=r.reward_type;document.getElementById("rewardService").value=r.service_id||"";document.getElementById("rewardVehicle").value=r.vehicle_category||"";document.getElementById("rewardPoints").value=r.points_cost;document.getElementById("rewardVoucher").value=r.voucher_amount||0;document.getElementById("rewardMinTx").value=r.min_transaction||0;document.getElementById("rewardValidity").value=r.validity_days;document.getElementById("rewardSort").value=r.sort_order||0;document.getElementById("rewardActive").checked=!!r.active;document.getElementById("rewardFormTitle").textContent="Edit Reward";window.scrollTo({top:0,behavior:"smooth"})}
+    async function saveReward(e){
+      e.preventDefault();clearMessage("rewardMessage");const b=document.getElementById("rewardSubmit");busy(b,true,"Menyimpan...","Simpan Reward");try{const {error}=await supabase.rpc("owner_save_reward_catalog",{p_reward_id:document.getElementById("rewardId").value||null,p_code:document.getElementById("rewardCode").value.trim().toLowerCase(),p_title:document.getElementById("rewardTitle").value.trim(),p_reward_type:document.getElementById("rewardType").value,p_service_id:document.getElementById("rewardService").value||null,p_vehicle_category:document.getElementById("rewardVehicle").value||null,p_points_cost:Number(document.getElementById("rewardPoints").value),p_voucher_amount:Number(document.getElementById("rewardVoucher").value||0),p_min_transaction:Number(document.getElementById("rewardMinTx").value||0),p_validity_days:Number(document.getElementById("rewardValidity").value),p_active:document.getElementById("rewardActive").checked,p_sort_order:Number(document.getElementById("rewardSort").value||0)});if(error)throw error;toast("Reward disimpan.");clearReward();await Promise.all([loadRewards(),loadAudit()])}catch(err){message("rewardMessage",rpcText(rpcCode(err)))}finally{busy(b,false,"Menyimpan...","Simpan Reward")}
+    }
+
+    async function loadLevels(){
+      const t=document.getElementById("levelList");t.className="loading";t.textContent="Memuat level...";const {data,error}=await supabase.from("membership_levels").select("*").order("sort_order");if(error){t.className="empty";t.textContent="Membership belum dapat dimuat.";return}levels=data||[];renderLevels()
+    }
+    function renderLevels(){const t=document.getElementById("levelList");t.className="grid";t.innerHTML=levels.map(l=>'<div class="level-card" data-level="'+l.level+'"><div class="item-head"><h3>'+esc(String(l.level).toUpperCase())+'</h3><span class="status active">LEVEL</span></div><div class="inline"><div class="field"><label>Min qualifying</label><input class="lvlMin" type="number" min="0" value="'+l.min_qualifying_points+'"></div><div class="field"><label>Bonus reward %</label><input class="lvlBonus" type="number" min="0" max="100" value="'+l.reward_bonus_percent+'"></div></div><div class="inline3"><div class="field"><label>Early access jam</label><input class="lvlEarly" type="number" min="0" value="'+l.early_access_hours+'"></div><div class="field"><label>Waitlist priority</label><input class="lvlWait" type="number" min="1" value="'+l.waitlist_priority+'"></div><div class="field"><label>Daily priority</label><input class="lvlDaily" type="number" min="0" value="'+l.daily_priority_reservations+'"></div></div><button class="btn secondary full saveLevel" data-level="'+l.level+'" type="button">Simpan '+esc(String(l.level).toUpperCase())+'</button></div>').join("");document.querySelectorAll(".saveLevel").forEach(b=>b.addEventListener("click",()=>saveLevel(b.dataset.level)))}
+    async function saveLevel(level){const box=document.querySelector('[data-level="'+level+'"]');const {error}=await supabase.rpc("owner_update_membership_level",{p_level:level,p_min_qualifying_points:Number(box.querySelector(".lvlMin").value),p_reward_bonus_percent:Number(box.querySelector(".lvlBonus").value),p_early_access_hours:Number(box.querySelector(".lvlEarly").value),p_waitlist_priority:Number(box.querySelector(".lvlWait").value),p_daily_priority_reservations:Number(box.querySelector(".lvlDaily").value)});if(error)return message("pageMessage",rpcText(rpcCode(error)));toast("Level "+level+" disimpan.");await loadLevels()}
+
+    async function loadWarranties(){
+      const t=document.getElementById("warrantyList");t.className="loading";t.textContent="Memuat warranty...";const {data,error}=await supabase.from("coating_warranties").select("*").order("created_at",{ascending:false}).limit(150);if(error){t.className="empty";t.textContent="Warranty belum dapat dimuat.";return}warranties=data||[];
+      const mids=[...new Set(warranties.map(x=>x.member_id))];if(mids.length){const {data:ms}=await supabase.from("member_profiles").select("user_id,full_name,member_code").in("user_id",mids);(ms||[]).forEach(m=>{const old=members.find(x=>x.user_id===m.user_id);if(!old)members.push(m)})}renderWarranties()
+    }
+    function renderWarranties(){const t=document.getElementById("warrantyList");if(!warranties.length){t.className="empty";t.textContent="Belum ada warranty coating. Warranty dibuat otomatis setelah booking Nano Coating yang memenuhi syarat selesai.";return}t.className="list";t.innerHTML=warranties.map(w=>{const m=members.find(x=>x.user_id===w.member_id)||{};return '<div class="warranty-card" data-warranty="'+w.id+'"><div class="item-head"><div><h3>'+esc(m.full_name||"Member")+' · '+esc(m.member_code||"-")+'</h3><div class="sub">'+esc(w.starts_on)+' → '+esc(w.ends_on)+'</div></div><span class="status '+w.status+'">'+esc(w.status)+'</span></div><div class="inline"><div class="field"><label>Status</label><select class="warStatus"><option value="active" '+(w.status==="active"?"selected":"")+'>Active</option><option value="expired" '+(w.status==="expired"?"selected":"")+'>Expired</option><option value="void" '+(w.status==="void"?"selected":"")+'>Void</option></select></div><div class="field"><label>Next maintenance</label><input class="warNext" type="date" value="'+esc(w.next_maintenance_on||"")+'"></div></div><div class="field"><label>Catatan</label><input class="warNotes" value="'+esc(w.notes||"")+'"></div><button class="btn secondary full saveWarranty" data-id="'+w.id+'" type="button">Simpan Warranty</button></div>'}).join("");document.querySelectorAll(".saveWarranty").forEach(b=>b.addEventListener("click",()=>saveWarranty(b.dataset.id)))}
+    async function saveWarranty(id){const box=document.querySelector('[data-warranty="'+id+'"]');const {error}=await supabase.rpc("owner_update_warranty",{p_warranty_id:id,p_status:box.querySelector(".warStatus").value,p_next_maintenance_on:box.querySelector(".warNext").value||null,p_notes:box.querySelector(".warNotes").value.trim()||null});if(error)return message("pageMessage",rpcText(rpcCode(error)));toast("Warranty diperbarui.");await loadWarranties()}
+
+    async function loadBanners(){
+      const t=document.getElementById("bannerList");t.className="loading";t.textContent="Memuat banner...";const {data,error}=await supabase.from("banners").select("*").order("sort_order").order("created_at",{ascending:false});if(error){t.className="empty";t.textContent="Banner belum dapat dimuat.";return}banners=data||[];renderBanners();document.getElementById("statBanners").textContent=banners.filter(x=>x.active).length
+    }
+    async function renderBanners(){
+      const t=document.getElementById("bannerList");if(!banners.length){t.className="empty";t.textContent="Belum ada banner.";return}const rows=[];for(const b of banners){let url=null;if(b.image_path){const {data}=await supabase.storage.from("banners").createSignedUrl(b.image_path,600);url=data?.signedUrl||null}rows.push('<div class="banner-card"><div class="item-head"><div><h3>'+esc(b.title)+'</h3><div class="sub">'+esc(b.action_type)+' · order '+b.sort_order+'</div></div><span class="status '+(b.active?"active":"suspended")+'">'+(b.active?"ACTIVE":"OFF")+'</span></div>'+(url?'<img class="media" src="'+esc(url)+'" alt="'+esc(b.title)+'">':'<div class="media-placeholder">Gambar tidak tersedia</div>')+'<div class="sub" style="margin-top:8px">'+esc(dt(b.starts_at))+' → '+esc(dt(b.ends_at))+'</div><div class="actions"><button class="btn secondary tiny editBanner" data-id="'+b.id+'" type="button">Edit</button></div></div>')}t.className="list";t.innerHTML=rows.join("");document.querySelectorAll(".editBanner").forEach(x=>x.addEventListener("click",()=>fillBanner(x.dataset.id)))
+    }
+    function clearBanner(){document.getElementById("bannerForm").reset();document.getElementById("bannerId").value="";document.getElementById("bannerExistingPath").value="";document.getElementById("bannerActive").checked=true;document.getElementById("bannerSort").value=0;document.getElementById("bannerFormTitle").textContent="Banner Baru";clearMessage("bannerMessage")}
+    function fillBanner(id){const b=banners.find(x=>x.id===id);if(!b)return;document.getElementById("bannerId").value=b.id;document.getElementById("bannerExistingPath").value=b.image_path||"";document.getElementById("bannerTitle").value=b.title;document.getElementById("bannerAction").value=b.action_type||"none";document.getElementById("bannerActionValue").value=b.action_value||"";document.getElementById("bannerSort").value=b.sort_order||0;document.getElementById("bannerStart").value=localInput(b.starts_at);document.getElementById("bannerEnd").value=localInput(b.ends_at);document.getElementById("bannerActive").checked=!!b.active;document.getElementById("bannerFormTitle").textContent="Edit Banner";window.scrollTo({top:0,behavior:"smooth"})}
+    async function saveBanner(e){
+      e.preventDefault();clearMessage("bannerMessage");const btn=document.getElementById("bannerSubmit");busy(btn,true,"Menyimpan...","Simpan Banner");try{let path=document.getElementById("bannerExistingPath").value||null;const file=document.getElementById("bannerImage").files[0];if(file){if(file.size>5242880)throw new Error("BANNER_TOO_LARGE");const ext=(file.name.split(".").pop()||"jpg").toLowerCase();path="owner/"+session.user.id+"/banner-"+Date.now()+"."+ext;const up=await supabase.storage.from("banners").upload(path,file,{upsert:false,contentType:file.type});if(up.error)throw up.error}if(!path)throw new Error("BANNER_IMAGE_REQUIRED");const {error}=await supabase.rpc("owner_save_banner",{p_banner_id:document.getElementById("bannerId").value||null,p_title:document.getElementById("bannerTitle").value.trim(),p_image_path:path,p_action_type:document.getElementById("bannerAction").value,p_action_value:document.getElementById("bannerActionValue").value.trim()||null,p_sort_order:Number(document.getElementById("bannerSort").value||0),p_active:document.getElementById("bannerActive").checked,p_starts_at:wibIso(document.getElementById("bannerStart").value),p_ends_at:wibIso(document.getElementById("bannerEnd").value)});if(error)throw error;toast("Banner disimpan.");clearBanner();await Promise.all([loadBanners(),loadOverview()])}catch(err){message("bannerMessage",err.message==="BANNER_TOO_LARGE"?"Ukuran banner maksimal 5 MB.":err.message==="BANNER_IMAGE_REQUIRED"?"Upload gambar banner.":rpcText(rpcCode(err)))}finally{busy(btn,false,"Menyimpan...","Simpan Banner")}
+    }
+
+    async function loadReports(){
+      const t=document.getElementById("reportList");t.className="loading";t.textContent="Memuat report...";const {data,error}=await supabase.from("story_reports").select("*").order("created_at",{ascending:false}).limit(100);if(error){t.className="empty";t.textContent="Report belum dapat dimuat.";return}reports=data||[];renderReports();document.getElementById("statReports").textContent=reports.filter(x=>x.status==="open").length
+    }
+    function renderReports(){const t=document.getElementById("reportList");if(!reports.length){t.className="empty";t.textContent="Tidak ada report story.";return}t.className="list";t.innerHTML=reports.map(r=>'<div class="report-card"><div class="item-head"><div><h3>Report '+esc(r.id.slice(0,8))+'</h3><div class="sub">'+esc(r.reason)+' · '+esc(dt(r.created_at))+'</div></div><span class="status '+r.status+'">'+esc(r.status)+'</span></div><div class="actions">'+(r.status==="open"?'<button class="btn secondary tiny reviewReport" data-id="'+r.id+'" data-status="reviewed" type="button">Reviewed</button><button class="btn secondary tiny reviewReport" data-id="'+r.id+'" data-status="dismissed" type="button">Dismiss</button>':'')+'<button class="btn warn tiny focusStory" data-story="'+r.story_id+'" type="button">Lihat Story</button></div></div>').join("");document.querySelectorAll(".reviewReport").forEach(b=>b.addEventListener("click",()=>reviewReport(b.dataset.id,b.dataset.status)));document.querySelectorAll(".focusStory").forEach(b=>b.addEventListener("click",()=>focusStory(b.dataset.story)))}
+    async function reviewReport(id,status){const {error}=await supabase.rpc("owner_review_story_report",{p_report_id:id,p_status:status});if(error)return message("pageMessage",rpcText(rpcCode(error)));toast("Report diperbarui.");await loadReports()}
+    async function loadStories(){
+      const t=document.getElementById("storyList");t.className="loading";t.textContent="Memuat story...";const {data,error}=await supabase.from("stories").select("*").order("created_at",{ascending:false}).limit(80);if(error){t.className="empty";t.textContent="Story belum dapat dimuat.";return}stories=data||[];await renderStories()
+    }
+    async function renderStories(){
+      const t=document.getElementById("storyList");if(!stories.length){t.className="empty";t.textContent="Belum ada story.";return}const rows=[];for(const s of stories){let url=null;if(s.media_path){const {data}=await supabase.storage.from("story-media").createSignedUrl(s.media_path,300);url=data?.signedUrl||null}rows.push('<div class="report-card" id="story-'+s.id+'"><div class="item-head"><div><h3>Story '+esc(s.id.slice(0,8))+'</h3><div class="sub">'+esc(s.caption||"Tanpa caption")+' · '+esc(dt(s.created_at))+'</div></div><span class="status '+s.status+'">'+esc(s.status)+'</span></div>'+(url?'<img class="media" src="'+esc(url)+'" alt="Story member">':'<div class="media-placeholder">Media tidak tersedia</div>')+'<div class="facts"><div class="fact"><span>Views</span><b>'+Number(s.view_count||0)+'</b></div><div class="fact"><span>Heart</span><b>'+Number(s.heart_count||0)+'</b></div><div class="fact"><span>Fire</span><b>'+Number(s.fire_count||0)+'</b></div><div class="fact"><span>Like</span><b>'+Number(s.like_count||0)+'</b></div></div><div class="actions"><button class="btn warn tiny moderateStory" data-id="'+s.id+'" data-action="moderate" type="button">Moderate</button><button class="btn danger tiny moderateStory" data-id="'+s.id+'" data-action="delete" type="button">Delete</button>'+(s.status!=="active"?'<button class="btn secondary tiny moderateStory" data-id="'+s.id+'" data-action="restore" type="button">Restore</button>':'')+'</div></div>')}t.className="list";t.innerHTML=rows.join("");document.querySelectorAll(".moderateStory").forEach(b=>b.addEventListener("click",()=>moderateStory(b.dataset.id,b.dataset.action)))
+    }
+    function focusStory(id){const el=document.getElementById("story-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"center"});else toast("Story tidak ada di batch terbaru.")}
+    async function moderateStory(id,action){let reason=null,suspend=false;if(action!=="restore"){reason=prompt("Alasan "+action+" story:","")||"";if(!reason)return;suspend=confirm("Suspend member pemilik story juga?")}const {error}=await supabase.rpc("owner_moderate_story",{p_story_id:id,p_action:action,p_reason:reason,p_suspend_member:suspend});if(error)return message("pageMessage",rpcText(rpcCode(error)));toast("Story diperbarui.");await Promise.all([loadStories(),loadReports(),loadMembers()])}
+
+    async function loadAudit(){
+      const t=document.getElementById("auditList");t.className="loading";t.textContent="Memuat audit log...";const {data,error}=await supabase.from("audit_logs").select("id,actor_user_id,actor_label,action,entity_type,entity_id,before_data,after_data,metadata,created_at").order("created_at",{ascending:false}).limit(250);if(error){t.className="empty";t.textContent="Audit log belum dapat dimuat.";return}audits=data||[];renderAudit()
+    }
+    function renderAudit(){const q=document.getElementById("auditSearch").value.trim().toLowerCase(),type=document.getElementById("auditType").value;let rows=audits;if(type)rows=rows.filter(x=>x.entity_type===type);if(q)rows=rows.filter(x=>[x.actor_label,x.action,x.entity_type,x.entity_id].some(v=>String(v||"").toLowerCase().includes(q)));const t=document.getElementById("auditList");if(!rows.length){t.className="empty";t.textContent="Tidak ada audit yang cocok.";return}t.className="list";t.innerHTML=rows.map(a=>'<div class="audit-card"><div class="item-head"><div><h3>'+esc(a.action)+'</h3><div class="sub">'+esc(a.actor_label||"-")+' · '+esc(a.entity_type)+' · '+esc(dt(a.created_at))+'</div></div><span class="status active">#'+a.id+'</span></div><div class="audit-data">'+esc(JSON.stringify({entity_id:a.entity_id,before:a.before_data,after:a.after_data,metadata:a.metadata},null,2))+'</div></div>').join("")}
+
+    document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setPanel(b.dataset.panel)));document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>setPanel(b.dataset.go)));document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeModal(b.dataset.close)));
+    document.getElementById("memberSearch").addEventListener("input",renderMembers);document.getElementById("memberStatusFilter").addEventListener("change",renderMembers);document.getElementById("refreshMembers").addEventListener("click",loadMembers);document.getElementById("saveStatus").addEventListener("click",saveMemberStatus);document.getElementById("adjustPoints").addEventListener("click",adjustMemberPoints);document.getElementById("saveBirthDate").addEventListener("click",saveMemberBirth);
+    document.getElementById("refreshServices").addEventListener("click",loadServices);document.getElementById("rewardForm").addEventListener("submit",saveReward);document.getElementById("clearReward").addEventListener("click",clearReward);document.getElementById("refreshRewards").addEventListener("click",loadRewards);document.getElementById("refreshWarranties").addEventListener("click",loadWarranties);
+    document.getElementById("bannerForm").addEventListener("submit",saveBanner);document.getElementById("clearBanner").addEventListener("click",clearBanner);document.getElementById("refreshBanners").addEventListener("click",loadBanners);document.getElementById("refreshReports").addEventListener("click",loadReports);document.getElementById("refreshStories").addEventListener("click",loadStories);document.getElementById("refreshAudit").addEventListener("click",loadAudit);document.getElementById("auditSearch").addEventListener("input",renderAudit);document.getElementById("auditType").addEventListener("change",renderAudit);
+    document.getElementById("logoutButton").addEventListener("click",async()=>{await supabase.auth.signOut();location.replace("./staff.html")});
+
+    if(await requireOwner()){await Promise.all([loadOverview(),loadMembers(),loadServices(),loadRewards(),loadLevels(),loadWarranties(),loadBanners(),loadReports(),loadStories(),loadAudit()])}
+  </script>
+</body>
+</html>
