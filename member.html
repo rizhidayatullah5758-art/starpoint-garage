@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090909">
+  <meta name="description" content="Dashboard Member Starpoint Garage">
+  <title>Member Dashboard | Starpoint Garage</title>
+  <style>
+    :root{--bg:#090909;--surface:#121212;--surface2:#181818;--line:#2c2c2c;--text:#f5f5f5;--muted:#9c9c9c;--ok:#baf0cb;--warn:#ffd79a;--danger:#ffb4b4;--shadow:0 24px 70px rgba(0,0,0,.36)}
+    *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.55}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .shell{width:min(1180px,calc(100% - 28px));margin:auto}.topbar{position:sticky;top:0;z-index:30;background:rgba(9,9,9,.9);backdrop-filter:blur(15px);border-bottom:1px solid #1e1e1e}.toprow{height:70px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:.04em}.brand img{width:50px;height:36px;object-fit:contain}.back{color:#aaa;font-size:13px}.back:hover{color:#fff}
+    .page{padding:34px 0 70px}.header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:24px}.eyebrow{text-transform:uppercase;letter-spacing:.16em;color:#777;font-size:11px;font-weight:900}.header h1{font-size:clamp(31px,4.5vw,52px);letter-spacing:-.035em;line-height:1.04;margin-top:7px}.header p{color:#999;max-width:530px}
+    .notice{display:none;border:1px solid #4c3b22;background:#1c160d;color:var(--warn);border-radius:14px;padding:14px 16px;margin-bottom:20px;font-size:13px}.notice.show{display:block}
+    .tabs{display:flex;gap:8px;overflow:auto;padding-bottom:4px;margin-bottom:22px}.tab{border:1px solid #303030;background:#111;color:#999;border-radius:12px;padding:10px 15px;white-space:nowrap;font-weight:800}.tab.active{background:#fff;color:#000;border-color:#fff}
+    .panel{display:none}.panel.active{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px}.card h2{font-size:22px;margin-bottom:5px}.muted{color:var(--muted)}.small{font-size:12px}
+    .member-card{background:linear-gradient(145deg,#1a1a1a,#0d0d0d);min-height:230px;display:flex;flex-direction:column;justify-content:space-between}.member-top{display:flex;justify-content:space-between;gap:18px}.avatar{width:74px;height:74px;border-radius:18px;object-fit:cover;background:#242424;border:1px solid #383838}.avatar.empty{display:grid;place-items:center;color:#777;font-size:11px;text-align:center}.member-name{font-size:28px;font-weight:900;line-height:1.1;margin-top:16px}.username{color:#999;margin-top:4px}.pill{display:inline-flex;border:1px solid #404040;border-radius:999px;padding:5px 9px;color:#bbb;font-size:10px;letter-spacing:.11em;text-transform:uppercase}.member-code{font-size:12px;color:#777;letter-spacing:.09em}
+    .stat{background:#0c0c0c;border:1px solid #292929;border-radius:16px;padding:16px}.stat span{display:block;color:#777;font-size:11px;margin-bottom:4px}.stat strong{font-size:22px}.section-title{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:15px}.section-title h2{margin:0}
+    .btn{border:1px solid transparent;border-radius:12px;padding:11px 15px;font-weight:900}.btn.primary{background:#fff;color:#050505}.btn.secondary{background:#171717;color:#fff;border-color:#353535}.btn.danger{background:#2a1111;color:#ffb4b4;border-color:#4b1c1c}.btn:disabled{opacity:.5;cursor:not-allowed}.btn.full{width:100%}
+    .field{margin-bottom:14px}.field label{display:block;color:#c3c3c3;font-size:12px;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;background:#0b0b0b;color:#fff;border:1px solid #353535;border-radius:11px;padding:12px 13px;outline:none}.field textarea{min-height:84px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:#777}.field input[type=file]{padding:9px}.field .hint{font-size:11px;color:#707070;margin-top:5px}.inline{display:grid;grid-template-columns:1fr 1fr;gap:12px}.check{display:flex;gap:9px;align-items:flex-start;color:#aaa;font-size:12px;margin:8px 0 15px}.check input{margin-top:3px}
+    .service-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.service-item{background:#0d0d0d;border:1px solid #2c2c2c;border-radius:15px;padding:16px}.service-item h3{font-size:15px}.service-item p{font-size:12px;color:#888;margin:5px 0 10px}.service-meta{display:flex;justify-content:space-between;gap:12px;color:#aaa;font-size:11px}.consult{color:#ffd79a;font-weight:800}
+    .booking-list{display:grid;gap:12px}.booking{border:1px solid #2d2d2d;border-radius:17px;background:#101010;padding:18px}.booking-head{display:flex;justify-content:space-between;gap:14px}.booking h3{font-size:16px}.status{font-size:10px;text-transform:uppercase;letter-spacing:.1em;padding:5px 8px;border:1px solid #3b3b3b;border-radius:999px;height:max-content;color:#bbb}.status.awaiting_payment{color:#ffd79a;border-color:#5f4a29}.status.confirmed,.status.completed{color:#baf0cb;border-color:#284b35}.status.cancelled,.status.no_show{color:#ffb4b4;border-color:#562424}.booking-info{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.info{background:#171717;border-radius:10px;padding:10px}.info span{display:block;color:#777;font-size:10px}.info b{font-size:12px}.booking-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.booking-actions .btn{font-size:11px;padding:8px 10px}
+    .empty{border:1px dashed #353535;border-radius:16px;padding:28px;text-align:center;color:#777}.loading{padding:30px;text-align:center;color:#888}.message{display:none;margin-bottom:14px;border-radius:11px;padding:11px 13px;font-size:12px}.message.show{display:block}.message.ok{background:#102219;color:var(--ok)}.message.error{background:#2b1111;color:var(--danger)}
+    .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:60;padding:16px;overflow:auto}.modal-bg.open{display:grid;place-items:center}.modal{width:min(100%,560px);background:#111;border:1px solid #333;border-radius:22px;box-shadow:var(--shadow);overflow:hidden}.modal-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid #292929}.modal-head b{font-size:17px}.x{width:36px;height:36px;border-radius:10px;border:1px solid #333;background:#171717;color:#fff;font-size:18px}.modal-body{padding:20px}.pay-detail{background:#0b0b0b;border:1px solid #292929;border-radius:13px;padding:14px;margin-bottom:14px}.pay-row{display:flex;justify-content:space-between;gap:18px;padding:7px 0;font-size:12px}.pay-row span:first-child{color:#777}.method-box{display:none;border:1px solid #303030;border-radius:13px;padding:14px;margin-bottom:14px}.method-box.show{display:block}.qris-wrap{text-align:center}.qris-wrap canvas{background:#fff;border-radius:12px;padding:8px;max-width:210px;width:100%;height:auto}.bank-number{font-size:20px;font-weight:900;letter-spacing:.04em;margin:7px 0}.copy{border:0;background:transparent;color:#ddd;text-decoration:underline;font-size:11px}
+    .payment-item{border-bottom:1px solid #292929;padding:12px 0}.payment-item:last-child{border-bottom:0}.payment-top{display:flex;justify-content:space-between;gap:12px}.payment-top b{font-size:13px}.payment-meta{color:#777;font-size:11px;margin-top:4px}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);opacity:0;background:#fff;color:#000;border-radius:12px;padding:11px 15px;font-weight:900;font-size:12px;z-index:90;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:820px){.grid{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}.header{align-items:flex-start;flex-direction:column}.service-list{grid-template-columns:1fr}}
+    @media(max-width:560px){.shell{width:min(100% - 20px,1180px)}.toprow{height:62px}.brand span{font-size:13px}.page{padding-top:22px}.grid3{grid-template-columns:1fr}.inline{grid-template-columns:1fr}.card{padding:19px;border-radius:17px}.booking-info{grid-template-columns:1fr 1fr}.modal-bg{padding:8px;align-items:end}.modal{border-radius:20px 20px 14px 14px}.service-meta{flex-direction:column;gap:3px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell toprow">
+      <a class="brand" href="./"><img src="IMG_0461.png" alt="Starpoint Garage"><span>STARPOINT MEMBER</span></a>
+      <a class="back" href="./">← Website utama</a>
+    </div>
+  </header>
+
+  <main class="shell page">
+    <div class="header">
+      <div><div class="eyebrow">Member Dashboard</div><h1 id="helloTitle">Halo, Member.</h1></div>
+      <p id="businessInfo">Memuat informasi Starpoint Garage...</p>
+    </div>
+
+    <div class="notice" id="profileNotice">Lengkapi profil dan foto avatar terlebih dahulu untuk membuka fitur booking.</div>
+
+    <nav class="tabs" aria-label="Menu dashboard">
+      <button class="tab active" data-panel="home" type="button">Ringkasan</button>
+      <button class="tab" data-panel="booking" type="button">Booking Baru</button>
+      <button class="tab" data-panel="history" type="button">Booking Saya</button>
+      <button class="tab" data-panel="payments" type="button">Pembayaran</button>
+      <button class="tab" data-panel="profile" type="button">Profil</button>
+    </nav>
+
+    <div class="message" id="pageMessage"></div>
+
+    <section class="panel active" id="homePanel">
+      <div class="grid">
+        <article class="card member-card">
+          <div>
+            <div class="member-top">
+              <span class="pill" id="profileStatus">MEMBER</span>
+              <div id="avatarHome" class="avatar empty">NO<br>PHOTO</div>
+            </div>
+            <div class="member-name" id="profileName">Member Starpoint</div>
+            <div class="username" id="profileUsername">@member</div>
+          </div>
+          <div class="member-code" id="profileCode">SPG-000000</div>
+        </article>
+        <article class="card">
+          <div class="section-title"><div><div class="eyebrow">Loyalty</div><h2>Point Member</h2></div></div>
+          <div class="grid3">
+            <div class="stat"><span>Point aktif</span><strong id="pointBalance">0</strong></div>
+            <div class="stat"><span>Qualifying</span><strong id="qualifyingPoints">0</strong></div>
+            <div class="stat"><span>Booking aktif</span><strong id="activeBookings">0</strong></div>
+          </div>
+          <p class="muted small" style="margin-top:14px">Saldo point dihitung dari ledger transaksi Starpoint.</p>
+        </article>
+      </div>
+
+      <div class="grid" style="margin-top:16px">
+        <article class="card">
+          <div class="section-title"><div><div class="eyebrow">Next Visit</div><h2>Booking Terdekat</h2></div></div>
+          <div id="nextBooking" class="empty">Belum ada booking aktif.</div>
+        </article>
+        <article class="card">
+          <div class="section-title"><div><div class="eyebrow">Quick Action</div><h2>Akses Cepat</h2></div></div>
+          <div style="display:grid;gap:9px">
+            <button class="btn primary full" type="button" data-go="booking">Buat Booking</button>
+            <button class="btn secondary full" type="button" data-go="history">Lihat Booking Saya</button>
+            <button class="btn secondary full" type="button" data-go="profile">Edit Profil</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="bookingPanel">
+      <div class="grid">
+        <article class="card">
+          <div class="section-title"><div><div class="eyebrow">New Booking</div><h2>Pilih Layanan</h2></div></div>
+          <form id="bookingForm">
+            <div class="field"><label for="serviceSelect">Layanan</label><select id="serviceSelect" required><option value="">Pilih layanan</option></select></div>
+            <div class="inline">
+              <div class="field"><label for="vehicleCategory">Kategori kendaraan</label>
+                <select id="vehicleCategory" required>
+                  <option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option><option value="big_bike">Big Bike</option><option value="luxury">Luxury</option>
+                </select>
+              </div>
+              <div class="field"><label for="vehicleType">Kendaraan</label><input id="vehicleType" required placeholder="Contoh: Honda HR-V"></div>
+            </div>
+            <div class="field"><label for="slotSelect">Jadwal tersedia</label><select id="slotSelect" required disabled><option value="">Pilih layanan dulu</option></select><div class="hint" id="slotHint">Slot dibuka dan dikelola oleh admin Starpoint.</div></div>
+            <div class="field"><label for="bookingNotes">Catatan (opsional)</label><textarea id="bookingNotes" placeholder="Warna kendaraan, keluhan, atau catatan lain"></textarea></div>
+            <div class="pay-detail">
+              <div class="pay-row"><span>Estimasi harga</span><b id="pricePreview">-</b></div>
+              <div class="pay-row"><span>DP minimum</span><b id="depositPreview">-</b></div>
+              <div class="pay-row"><span>Durasi</span><b id="durationPreview">-</b></div>
+            </div>
+            <label class="check"><input type="checkbox" id="depositAgree" required><span>Saya memahami bahwa DP booking bersifat hangus/non-refundable sesuai ketentuan Starpoint Garage.</span></label>
+            <button class="btn primary full" id="bookingSubmit" type="submit">Buat Booking</button>
+          </form>
+        </article>
+        <article class="card">
+          <div class="section-title"><div><div class="eyebrow">Available Services</div><h2>Layanan Member</h2></div></div>
+          <div id="serviceList" class="loading">Memuat layanan...</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="historyPanel">
+      <article class="card">
+        <div class="section-title"><div><div class="eyebrow">Booking History</div><h2>Booking Saya</h2></div><button class="btn secondary" id="refreshBookings" type="button">Refresh</button></div>
+        <div id="bookingList" class="loading">Memuat booking...</div>
+      </article>
+    </section>
+
+    <section class="panel" id="paymentsPanel">
+      <article class="card">
+        <div class="section-title"><div><div class="eyebrow">Manual Payment</div><h2>Riwayat Pembayaran</h2></div></div>
+        <p class="muted small" style="margin-bottom:14px">Pembayaran dilakukan manual melalui QRIS BRI, transfer BRI, atau cash dan diverifikasi oleh staff.</p>
+        <div id="paymentList" class="loading">Memuat pembayaran...</div>
+      </article>
+    </section>
+
+    <section class="panel" id="profilePanel">
+      <div class="grid">
+        <article class="card">
+          <div class="section-title"><div><div class="eyebrow">Profile</div><h2>Lengkapi Profil</h2></div></div>
+          <form id="profileForm">
+            <div class="field"><label for="profileFullName">Nama lengkap</label><input id="profileFullName" required></div>
+            <div class="field"><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date" required><div class="hint">Perubahan tanggal lahir dibatasi oleh sistem.</div></div>
+            <div class="field"><label for="profileAvatar">Foto avatar</label><input id="profileAvatar" type="file" accept="image/jpeg,image/png,image/webp"><div class="hint">JPG, PNG, atau WebP. Maksimal 3 MB.</div></div>
+            <label class="check"><input id="marketingNotifications" type="checkbox"><span>Saya bersedia menerima informasi promo/marketing Starpoint Garage.</span></label>
+            <button class="btn primary full" id="profileSubmit" type="submit">Simpan Profil</button>
+          </form>
+        </article>
+        <article class="card">
+          <div class="section-title"><div><div class="eyebrow">Account</div><h2>Data Akun</h2></div></div>
+          <div id="profileAvatarPreview" class="avatar empty" style="width:100px;height:100px;margin-bottom:16px">NO<br>PHOTO</div>
+          <div class="pay-detail">
+            <div class="pay-row"><span>Member code</span><b id="accountCode">-</b></div>
+            <div class="pay-row"><span>Username</span><b id="accountUsername">-</b></div>
+            <div class="pay-row"><span>Email</span><b id="accountEmail">-</b></div>
+            <div class="pay-row"><span>Referral</span><b id="accountReferral">-</b></div>
+          </div>
+          <button class="btn danger full" id="logoutButton" type="button">Keluar dari Akun</button>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-bg" id="paymentModal">
+    <div class="modal">
+      <div class="modal-head"><b>Bayar Booking</b><button class="x" data-close="paymentModal" type="button">×</button></div>
+      <div class="modal-body">
+        <div class="message" id="paymentMessage"></div>
+        <div class="pay-detail">
+          <div class="pay-row"><span>Booking</span><b id="payBookingCode">-</b></div>
+          <div class="pay-row"><span>Total</span><b id="payTotal">-</b></div>
+          <div class="pay-row"><span>Sudah dibayar</span><b id="payPaid">-</b></div>
+          <div class="pay-row"><span>Sisa</span><b id="payRemaining">-</b></div>
+          <div class="pay-row"><span>Minimum sekarang</span><b id="payMinimum">-</b></div>
+        </div>
+        <form id="paymentForm">
+          <div class="field"><label for="paymentMethod">Metode</label><select id="paymentMethod" required><option value="qris_bri_manual">QRIS BRI</option><option value="bank_transfer_bri">Transfer BRI</option><option value="cash">Cash</option></select></div>
+          <div class="method-box show" id="qrisBox"><div class="qris-wrap"><canvas id="qrisCanvas" width="220" height="220"></canvas><p class="muted small" style="margin-top:8px">Scan QRIS Starpoint, masukkan nominal sesuai form, lalu upload bukti pembayaran.</p></div></div>
+          <div class="method-box" id="bankBox"><div class="muted small">Transfer BRI ke</div><div class="bank-number" id="bankAccountNumber">-</div><b id="bankAccountName">-</b><div><button class="copy" id="copyBank" type="button">Salin nomor rekening</button></div></div>
+          <div class="method-box" id="cashBox"><p class="muted small">Pilih cash jika pembayaran akan dilakukan tunai dan diverifikasi langsung oleh staff Starpoint.</p></div>
+          <div class="field"><label for="paymentAmount">Nominal pembayaran</label><input id="paymentAmount" type="number" inputmode="numeric" min="1" required></div>
+          <div class="field" id="proofField"><label for="paymentProof">Bukti pembayaran</label><input id="paymentProof" type="file" accept="image/jpeg,image/png,image/webp"><div class="hint">Wajib untuk QRIS/transfer. Maksimal 5 MB.</div></div>
+          <div class="field"><label for="paymentNotes">Catatan (opsional)</label><textarea id="paymentNotes" placeholder="Contoh: transfer dari rekening atas nama ..."></textarea></div>
+          <button class="btn primary full" id="paymentSubmit" type="submit">Kirim untuk Verifikasi</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="rescheduleModal">
+    <div class="modal">
+      <div class="modal-head"><b>Ubah Jadwal</b><button class="x" data-close="rescheduleModal" type="button">×</button></div>
+      <div class="modal-body">
+        <div class="message" id="rescheduleMessage"></div>
+        <div class="field"><label for="rescheduleSlot">Jadwal baru</label><select id="rescheduleSlot"></select></div>
+        <button class="btn primary full" id="rescheduleSubmit" type="button">Simpan Jadwal Baru</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    import QRCode from "https://esm.sh/qrcode@1.5.4";
+
+    const SUPABASE_URL="https://lscwmlxsvmakhnzknvrr.supabase.co";
+    const SUPABASE_KEY="sb_publishable_xP2C7pPrFpjzbo4WS-C2sw_pYi5hHph";
+    const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
+
+    let session=null, profile=null, services=[], bookings=[], payments=[], settings={};
+    let activePaymentBooking=null, activePaymentSummary=null, activeRescheduleBooking=null;
+
+    const rupiah=n=>"Rp"+Number(n||0).toLocaleString("id-ID");
+    const dt=value=>value?new Intl.DateTimeFormat("id-ID",{timeZone:"Asia/Jakarta",weekday:"short",day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(value)):"-";
+    const statusLabel={awaiting_payment:"Menunggu Pembayaran",confirmed:"Terkonfirmasi",late:"Terlambat",no_show:"No Show",in_treatment:"Sedang Treatment",completed:"Selesai",cancelled:"Dibatalkan",waiting_verification:"Menunggu Verifikasi",paid:"Lunas",failed:"Ditolak",expired:"Kedaluwarsa",refunded:"Refund"};
+
+    function msg(id,text,type="error"){const el=document.getElementById(id);el.textContent=text;el.className="message show "+type}
+    function clearMsg(id){const el=document.getElementById(id);el.textContent="";el.className="message"}
+    function toast(text){const el=document.getElementById("toast");el.textContent=text;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2400)}
+    function busy(btn,on,busyText,normal){btn.disabled=on;btn.textContent=on?busyText:normal}
+    function openModal(id){document.getElementById(id).classList.add("open")}
+    function closeModal(id){document.getElementById(id).classList.remove("open")}
+    function rpcError(error){const m=(error?.message||"").toUpperCase();const codes=["AUTH_REQUIRED","MEMBER_NOT_FOUND","MEMBER_NOT_ELIGIBLE","PROFILE_INCOMPLETE","SERVICE_NOT_BOOKABLE","INVALID_SLOT","SLOT_NOT_AVAILABLE","SLOT_FULL","VEHICLE_TYPE_REQUIRED","BOOKING_NOT_FOUND","BOOKING_CANNOT_CANCEL","BOOKING_CANNOT_RESCHEDULE","RESCHEDULE_LIMIT_REACHED","RESCHEDULE_TOO_LATE","PREMIUM_RESCHEDULE_WINDOW_EXCEEDED","PAYMENT_ALREADY_WAITING_VERIFICATION","BOOKING_ALREADY_PAID","BOOKING_NOT_PAYABLE","PAYMENT_BELOW_MINIMUM","PAYMENT_EXCEEDS_BALANCE","INVALID_PROOF_PATH"];return codes.find(c=>m.includes(c))||"REQUEST_FAILED"}
+    function friendly(code){return({PROFILE_INCOMPLETE:"Lengkapi profil dan foto avatar sebelum membuat booking.",SLOT_NOT_AVAILABLE:"Slot ini sudah tidak tersedia.",SLOT_FULL:"Slot sudah penuh.",INVALID_SLOT:"Jadwal tidak valid.",SERVICE_NOT_BOOKABLE:"Layanan belum dapat dibooking.",VEHICLE_TYPE_REQUIRED:"Nama/tipe kendaraan wajib diisi.",BOOKING_CANNOT_CANCEL:"Booking ini tidak dapat dibatalkan.",BOOKING_CANNOT_RESCHEDULE:"Booking ini tidak dapat dijadwal ulang.",RESCHEDULE_LIMIT_REACHED:"Batas reschedule sudah tercapai.",RESCHEDULE_TOO_LATE:"Reschedule sudah terlalu dekat dengan jadwal.",PREMIUM_RESCHEDULE_WINDOW_EXCEEDED:"Jadwal baru melewati batas reschedule Premium Wash.",PAYMENT_ALREADY_WAITING_VERIFICATION:"Masih ada pembayaran yang menunggu verifikasi.",BOOKING_ALREADY_PAID:"Booking ini sudah lunas.",BOOKING_NOT_PAYABLE:"Booking ini tidak dapat dibayar.",PAYMENT_BELOW_MINIMUM:"Nominal di bawah minimum pembayaran.",PAYMENT_EXCEEDS_BALANCE:"Nominal melebihi sisa tagihan.",REQUEST_FAILED:"Permintaan belum berhasil. Coba lagi."})[code]||"Permintaan belum berhasil."}
+
+    function setPanel(name){
+      document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.panel===name));
+      document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===name+"Panel"));
+      if(name==="history") loadBookings();
+      if(name==="payments") loadPayments();
+      if(name==="booking") loadServices();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    async function requireSession(){
+      const {data}=await supabase.auth.getSession();
+      session=data.session;
+      if(!session){location.replace("./?member=login");return false}
+      return true;
+    }
+
+    async function loadSettings(){
+      const {data}=await supabase.from("app_settings").select("key,value").in("key",["business","payment_bank_transfer","payment_mode","qris_manual","booking_rules"]);
+      (data||[]).forEach(r=>settings[r.key]=r.value);
+      const b=settings.business||{};
+      document.getElementById("businessInfo").textContent=(b.address||"Starpoint Garage")+" · "+(b.hours||"09.00-18.00");
+      const bank=settings.payment_bank_transfer||{};
+      document.getElementById("bankAccountNumber").textContent=bank.account_number||"-";
+      document.getElementById("bankAccountName").textContent=bank.account_name||"-";
+      const payload=settings.qris_manual?.payload;
+      if(payload){try{await QRCode.toCanvas(document.getElementById("qrisCanvas"),payload,{width:210,margin:1})}catch(e){}}
+    }
+
+    async function signed(bucket,path){
+      if(!path)return null;
+      const {data}=await supabase.storage.from(bucket).createSignedUrl(path,3600);
+      return data?.signedUrl||null;
+    }
+
+    async function loadProfile(){
+      const {data,error}=await supabase.from("member_profiles").select("*").eq("user_id",session.user.id).single();
+      if(error||!data){msg("pageMessage","Profil member tidak dapat dimuat.");return}
+      profile=data;
+      document.getElementById("helloTitle").textContent="Halo, "+(data.full_name?.split(" ")[0]||"Member")+".";
+      document.getElementById("profileStatus").textContent=String(data.status||"member").toUpperCase();
+      document.getElementById("profileName").textContent=data.full_name||"Member Starpoint";
+      document.getElementById("profileUsername").textContent="@"+(data.username||"-");
+      document.getElementById("profileCode").textContent=data.member_code||"-";
+      document.getElementById("accountCode").textContent=data.member_code||"-";
+      document.getElementById("accountUsername").textContent="@"+(data.username||"-");
+      document.getElementById("accountEmail").textContent=data.email||"-";
+      document.getElementById("accountReferral").textContent=data.referral_code||"-";
+      document.getElementById("profileFullName").value=data.full_name||"";
+      document.getElementById("profileBirthDate").value=data.birth_date||"";
+      document.getElementById("marketingNotifications").checked=!!data.marketing_notifications;
+      document.getElementById("profileNotice").classList.toggle("show",!data.onboarding_completed);
+      document.querySelector('[data-panel="booking"]').disabled=!data.onboarding_completed;
+      if(data.avatar_path){
+        const url=await signed("member-avatars",data.avatar_path);
+        if(url){
+          ["avatarHome","profileAvatarPreview"].forEach(id=>{const old=document.getElementById(id);const img=document.createElement("img");img.id=id;img.className="avatar";if(id==="profileAvatarPreview"){img.style.width="100px";img.style.height="100px";img.style.marginBottom="16px"}img.src=url;img.alt="Avatar member";old.replaceWith(img)});
+        }
+      }
+    }
+
+    async function loadPoints(){
+      const {data}=await supabase.from("point_ledger").select("delta,qualifying_delta").eq("member_id",session.user.id);
+      let p=0,q=0;(data||[]).forEach(r=>{p+=Number(r.delta||0);q+=Number(r.qualifying_delta||0)});
+      document.getElementById("pointBalance").textContent=p.toLocaleString("id-ID");
+      document.getElementById("qualifyingPoints").textContent=q.toLocaleString("id-ID");
+    }
+
+    async function loadServices(){
+      const {data,error}=await supabase.from("services").select("id,code,name_id,description_id,booking_enabled,requires_deposit,minimum_deposit,duration_minutes,duration_label,consultation_only,home_service_whatsapp,workshop_only,sort_order,service_prices(vehicle_category,amount,price_label)").eq("active",true).order("sort_order");
+      if(error){document.getElementById("serviceList").innerHTML='<div class="empty">Layanan belum dapat dimuat.</div>';return}
+      services=data||[];
+      const select=document.getElementById("serviceSelect");
+      select.innerHTML='<option value="">Pilih layanan</option>';
+      services.filter(s=>s.booking_enabled&&!s.consultation_only).forEach(s=>select.insertAdjacentHTML("beforeend",'<option value="'+s.id+'">'+escapeHtml(s.name_id)+'</option>'));
+      document.getElementById("serviceList").className="";
+      document.getElementById("serviceList").innerHTML='<div class="service-list">'+services.map(s=>{
+        const amounts=(s.service_prices||[]).map(p=>Number(p.amount)).filter(Number.isFinite);
+        const price=amounts.length?rupiah(Math.min(...amounts))+"+":(s.consultation_only?"Konsultasi":"Harga menyusul");
+        const c=s.consultation_only?'<span class="consult">Via WhatsApp</span>':'<span>'+price+'</span>';
+        return '<div class="service-item"><h3>'+escapeHtml(s.name_id)+'</h3><p>'+escapeHtml(s.duration_label||"Durasi menyesuaikan")+'</p><div class="service-meta">'+c+'<span>'+ (s.requires_deposit?"DP "+rupiah(s.minimum_deposit):"Tanpa DP")+'</span></div>'+(s.consultation_only?'<button class="btn secondary full consultBtn" style="margin-top:10px;font-size:11px" data-service="'+escapeHtml(s.name_id)+'" type="button">Konsultasi WhatsApp</button>':'')+'</div>';
+      }).join("")+'</div>';
+      document.querySelectorAll(".consultBtn").forEach(b=>b.addEventListener("click",()=>openWhatsApp(b.dataset.service)));
+    }
+
+    function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+    function openWhatsApp(service){const phone=String(settings.business?.support_whatsapp||"081345115758").replace(/^0/,"62").replace(/\D/g,"");const text=encodeURIComponent("Halo Starpoint Garage, saya member dan ingin konsultasi layanan "+service+".");window.open("https://wa.me/"+phone+"?text="+text,"_blank","noopener")}
+
+    function servicePrice(service,category){
+      const rows=service?.service_prices||[];
+      const exact=rows.find(p=>p.vehicle_category===category);
+      const generic=rows.find(p=>p.vehicle_category===null);
+      return exact?.amount??generic?.amount??null;
+    }
+
+    async function updateBookingPreview(){
+      const service=services.find(s=>s.id===document.getElementById("serviceSelect").value);
+      const cat=document.getElementById("vehicleCategory").value;
+      const price=servicePrice(service,cat);
+      document.getElementById("pricePreview").textContent=price===null?"Konsultasi":rupiah(price);
+      document.getElementById("depositPreview").textContent=service?(service.requires_deposit?rupiah(Math.min(Number(service.minimum_deposit||0),Number(price??service.minimum_deposit||0))):"Tanpa DP"):"-";
+      document.getElementById("durationPreview").textContent=service?.duration_label||"-";
+      await loadSlots(service?.id);
+    }
+
+    async function loadSlots(serviceId){
+      const sel=document.getElementById("slotSelect");
+      if(!serviceId){sel.disabled=true;sel.innerHTML='<option value="">Pilih layanan dulu</option>';return}
+      sel.disabled=true;sel.innerHTML='<option value="">Memuat slot...</option>';
+      const {data,error}=await supabase.rpc("available_booking_slots",{p_service_id:serviceId});
+      if(error||!data?.length){sel.innerHTML='<option value="">Belum ada slot tersedia</option>';document.getElementById("slotHint").textContent="Admin Starpoint belum membuka slot untuk layanan ini atau semua slot sudah penuh.";return}
+      sel.innerHTML='<option value="">Pilih jadwal</option>'+data.map(s=>'<option value="'+s.id+'">'+escapeHtml(dt(s.starts_at))+' · sisa '+s.available_capacity+'</option>').join("");
+      sel.disabled=false;document.getElementById("slotHint").textContent="Waktu ditampilkan dalam WIB.";
+    }
+
+    async function loadBookings(){
+      const target=document.getElementById("bookingList");target.className="loading";target.textContent="Memuat booking...";
+      const {data,error}=await supabase.from("bookings").select("id,booking_code,status,quoted_total,deposit_required,deposit_forfeited,reschedule_count,vehicle_type,vehicle_category,notes,created_at,slot_id,service_id,services(name_id,code),booking_slots(starts_at,ends_at)").eq("member_id",session.user.id).order("created_at",{ascending:false});
+      if(error){target.className="empty";target.textContent="Booking belum dapat dimuat.";return}
+      bookings=data||[];
+      const active=bookings.filter(b=>!["completed","cancelled","no_show"].includes(b.status));
+      document.getElementById("activeBookings").textContent=active.length;
+      renderNext(active);
+      if(!bookings.length){target.className="empty";target.textContent="Belum ada booking.";return}
+      target.className="booking-list";
+      target.innerHTML=bookings.map(renderBooking).join("");
+      bindBookingActions();
+    }
+
+    function renderNext(active){
+      const target=document.getElementById("nextBooking");
+      const next=[...active].filter(b=>b.booking_slots?.starts_at).sort((a,b)=>new Date(a.booking_slots.starts_at)-new Date(b.booking_slots.starts_at))[0];
+      if(!next){target.className="empty";target.textContent="Belum ada booking aktif.";return}
+      target.className="booking";
+      target.innerHTML='<div class="booking-head"><div><h3>'+escapeHtml(next.services?.name_id||"Layanan")+'</h3><div class="muted small">'+escapeHtml(next.booking_code||"-")+'</div></div><span class="status '+next.status+'">'+escapeHtml(statusLabel[next.status]||next.status)+'</span></div><div class="booking-info"><div class="info"><span>Jadwal</span><b>'+escapeHtml(dt(next.booking_slots?.starts_at))+'</b></div><div class="info"><span>Kendaraan</span><b>'+escapeHtml(next.vehicle_type)+'</b></div><div class="info"><span>Total</span><b>'+escapeHtml(rupiah(next.quoted_total))+'</b></div></div>';
+    }
+
+    function renderBooking(b){
+      const canCancel=["awaiting_payment","confirmed"].includes(b.status);
+      const canReschedule=["awaiting_payment","confirmed","late","no_show"].includes(b.status);
+      const canPay=!["cancelled","no_show"].includes(b.status)&&Number(b.quoted_total)>0;
+      return '<div class="booking"><div class="booking-head"><div><h3>'+escapeHtml(b.services?.name_id||"Layanan")+'</h3><div class="muted small">'+escapeHtml(b.booking_code||"-")+'</div></div><span class="status '+b.status+'">'+escapeHtml(statusLabel[b.status]||b.status)+'</span></div><div class="booking-info"><div class="info"><span>Jadwal</span><b>'+escapeHtml(dt(b.booking_slots?.starts_at))+'</b></div><div class="info"><span>Kendaraan</span><b>'+escapeHtml(b.vehicle_type)+'</b></div><div class="info"><span>Total</span><b>'+escapeHtml(rupiah(b.quoted_total))+'</b></div></div><div class="booking-actions">'+(canPay?'<button class="btn primary payBtn" data-id="'+b.id+'" type="button">Bayar</button>':'')+(canReschedule?'<button class="btn secondary rescheduleBtn" data-id="'+b.id+'" type="button">Ubah Jadwal</button>':'')+(canCancel?'<button class="btn danger cancelBtn" data-id="'+b.id+'" type="button">Batalkan</button>':'')+'</div></div>';
+    }
+
+    function bindBookingActions(){
+      document.querySelectorAll(".payBtn").forEach(b=>b.addEventListener("click",()=>openPayment(b.dataset.id)));
+      document.querySelectorAll(".rescheduleBtn").forEach(b=>b.addEventListener("click",()=>openReschedule(b.dataset.id)));
+      document.querySelectorAll(".cancelBtn").forEach(b=>b.addEventListener("click",()=>cancelBooking(b.dataset.id)));
+    }
+
+    async function loadPayments(){
+      const target=document.getElementById("paymentList");target.className="loading";target.textContent="Memuat pembayaran...";
+      const {data,error}=await supabase.from("payments").select("id,payment_code,booking_id,kind,method,status,amount,proof_path,notes,created_at,verified_at").eq("member_id",session.user.id).order("created_at",{ascending:false});
+      if(error){target.className="empty";target.textContent="Pembayaran belum dapat dimuat.";return}
+      payments=data||[];
+      if(!payments.length){target.className="empty";target.textContent="Belum ada pembayaran.";return}
+      target.className="";
+      target.innerHTML=payments.map(p=>'<div class="payment-item"><div class="payment-top"><b>'+escapeHtml(p.payment_code||"Pembayaran")+'</b><span class="status '+p.status+'">'+escapeHtml(statusLabel[p.status]||p.status)+'</span></div><div class="payment-meta">'+rupiah(p.amount)+' · '+escapeHtml(p.method.replaceAll("_"," "))+' · '+escapeHtml(dt(p.created_at))+'</div></div>').join("");
+    }
+
+    async function openPayment(id){
+      clearMsg("paymentMessage");
+      const booking=bookings.find(b=>b.id===id);
+      if(!booking)return;
+      const {data,error}=await supabase.rpc("booking_payment_summary",{p_booking_id:id});
+      const summary=Array.isArray(data)?data[0]:data;
+      if(error||!summary){msg("pageMessage","Ringkasan pembayaran belum dapat dimuat.");return}
+      if(summary.fully_paid){toast("Booking ini sudah lunas.");return}
+      const {data:pending}=await supabase.from("payments").select("id").eq("booking_id",id).in("status",["pending","waiting_verification"]).limit(1);
+      if(pending?.length){toast("Masih ada pembayaran menunggu verifikasi.");return}
+      activePaymentBooking=booking;activePaymentSummary=summary;
+      document.getElementById("payBookingCode").textContent=booking.booking_code||"-";
+      document.getElementById("payTotal").textContent=rupiah(summary.quoted_total);
+      document.getElementById("payPaid").textContent=rupiah(summary.paid_total);
+      document.getElementById("payRemaining").textContent=rupiah(summary.remaining_balance);
+      document.getElementById("payMinimum").textContent=rupiah(summary.minimum_payment_now);
+      const amount=document.getElementById("paymentAmount");amount.min=summary.minimum_payment_now;amount.max=summary.remaining_balance;amount.value=summary.minimum_payment_now||summary.remaining_balance;
+      document.getElementById("paymentProof").value="";document.getElementById("paymentNotes").value="";
+      setPaymentMethodUI();openModal("paymentModal");
+    }
+
+    function setPaymentMethodUI(){
+      const method=document.getElementById("paymentMethod").value;
+      document.getElementById("qrisBox").classList.toggle("show",method==="qris_bri_manual");
+      document.getElementById("bankBox").classList.toggle("show",method==="bank_transfer_bri");
+      document.getElementById("cashBox").classList.toggle("show",method==="cash");
+      document.getElementById("proofField").style.display=method==="cash"?"none":"block";
+      document.getElementById("paymentProof").required=method!=="cash";
+    }
+
+    async function openReschedule(id){
+      clearMsg("rescheduleMessage");
+      const booking=bookings.find(b=>b.id===id);if(!booking)return;
+      activeRescheduleBooking=booking;
+      const sel=document.getElementById("rescheduleSlot");sel.innerHTML='<option>Memuat...</option>';
+      const {data,error}=await supabase.rpc("available_booking_slots",{p_service_id:booking.service_id});
+      const slots=(data||[]).filter(s=>s.id!==booking.slot_id);
+      if(error||!slots.length){sel.innerHTML='<option value="">Belum ada slot pengganti</option>'}else{sel.innerHTML='<option value="">Pilih jadwal baru</option>'+slots.map(s=>'<option value="'+s.id+'">'+escapeHtml(dt(s.starts_at))+' · sisa '+s.available_capacity+'</option>').join("")}
+      openModal("rescheduleModal");
+    }
+
+    async function cancelBooking(id){
+      const booking=bookings.find(b=>b.id===id);if(!booking)return;
+      const warning=booking.deposit_required>0?"DP yang sudah dibayar dapat dinyatakan hangus. ":"";
+      if(!confirm(warning+"Batalkan booking "+(booking.booking_code||"ini")+"?"))return;
+      const {error}=await supabase.rpc("cancel_member_booking",{p_booking_id:id});
+      if(error){msg("pageMessage",friendly(rpcError(error)));return}
+      toast("Booking dibatalkan.");await Promise.all([loadBookings(),loadPayments()]);
+    }
+
+    document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{if(!b.disabled)setPanel(b.dataset.panel)}));
+    document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>setPanel(b.dataset.go)));
+    document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeModal(b.dataset.close)));
+    document.getElementById("paymentMethod").addEventListener("change",setPaymentMethodUI);
+    document.getElementById("serviceSelect").addEventListener("change",updateBookingPreview);
+    document.getElementById("vehicleCategory").addEventListener("change",updateBookingPreview);
+    document.getElementById("refreshBookings").addEventListener("click",loadBookings);
+    document.getElementById("copyBank").addEventListener("click",async()=>{const n=settings.payment_bank_transfer?.account_number||"";if(n){await navigator.clipboard.writeText(n);toast("Nomor rekening disalin.")}});
+
+    document.getElementById("profileForm").addEventListener("submit",async e=>{
+      e.preventDefault();clearMsg("pageMessage");const btn=document.getElementById("profileSubmit");busy(btn,true,"Menyimpan...","Simpan Profil");
+      try{
+        let avatarPath=profile.avatar_path;
+        const file=document.getElementById("profileAvatar").files[0];
+        if(!avatarPath&&!file)throw new Error("AVATAR_REQUIRED");
+        if(file){
+          if(file.size>3145728)throw new Error("AVATAR_TOO_LARGE");
+          const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
+          avatarPath=session.user.id+"/avatar-"+Date.now()+"."+ext;
+          const up=await supabase.storage.from("member-avatars").upload(avatarPath,file,{upsert:false,contentType:file.type});
+          if(up.error)throw up.error;
+        }
+        const {error}=await supabase.rpc("update_my_member_profile",{p_full_name:document.getElementById("profileFullName").value.trim(),p_avatar_path:avatarPath,p_birth_date:document.getElementById("profileBirthDate").value,p_marketing_notifications:document.getElementById("marketingNotifications").checked});
+        if(error)throw error;
+        toast("Profil berhasil disimpan.");await loadProfile();setPanel("home");
+      }catch(error){const code=error.message==="AVATAR_REQUIRED"?"AVATAR_REQUIRED":error.message==="AVATAR_TOO_LARGE"?"AVATAR_TOO_LARGE":rpcError(error);msg("pageMessage",code==="AVATAR_REQUIRED"?"Foto avatar wajib untuk menyelesaikan profil.":code==="AVATAR_TOO_LARGE"?"Ukuran avatar maksimal 3 MB.":friendly(code))}
+      finally{busy(btn,false,"Menyimpan...","Simpan Profil")}
+    });
+
+    document.getElementById("bookingForm").addEventListener("submit",async e=>{
+      e.preventDefault();clearMsg("pageMessage");if(!profile?.onboarding_completed){msg("pageMessage","Lengkapi profil terlebih dahulu.");setPanel("profile");return}
+      const btn=document.getElementById("bookingSubmit");busy(btn,true,"Membuat booking...","Buat Booking");
+      try{
+        const {data,error}=await supabase.rpc("create_member_booking",{p_service_id:document.getElementById("serviceSelect").value,p_slot_id:document.getElementById("slotSelect").value,p_vehicle_type:document.getElementById("vehicleType").value.trim(),p_vehicle_category:document.getElementById("vehicleCategory").value,p_notes:document.getElementById("bookingNotes").value.trim()||null});
+        if(error)throw error;
+        document.getElementById("bookingForm").reset();document.getElementById("slotSelect").disabled=true;document.getElementById("slotSelect").innerHTML='<option value="">Pilih layanan dulu</option>';document.getElementById("pricePreview").textContent="-";document.getElementById("depositPreview").textContent="-";document.getElementById("durationPreview").textContent="-";
+        toast("Booking berhasil dibuat.");await loadBookings();setPanel("history");
+      }catch(error){msg("pageMessage",friendly(rpcError(error)))}
+      finally{busy(btn,false,"Membuat booking...","Buat Booking")}
+    });
+
+    document.getElementById("paymentForm").addEventListener("submit",async e=>{
+      e.preventDefault();clearMsg("paymentMessage");const btn=document.getElementById("paymentSubmit");busy(btn,true,"Mengirim...","Kirim untuk Verifikasi");
+      try{
+        const method=document.getElementById("paymentMethod").value;const amount=Number(document.getElementById("paymentAmount").value);
+        if(amount<Number(activePaymentSummary.minimum_payment_now)||amount>Number(activePaymentSummary.remaining_balance))throw new Error("BAD_AMOUNT");
+        let proofPath=null;const file=document.getElementById("paymentProof").files[0];
+        if(method!=="cash"&&!file)throw new Error("PROOF_REQUIRED");
+        if(file){
+          if(file.size>5242880)throw new Error("PROOF_TOO_LARGE");
+          const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
+          proofPath=session.user.id+"/"+activePaymentBooking.id+"/payment-"+Date.now()+"."+ext;
+          const up=await supabase.storage.from("payment-proofs").upload(proofPath,file,{upsert:false,contentType:file.type});
+          if(up.error)throw up.error;
+        }
+        const {error}=await supabase.rpc("create_manual_payment",{p_booking_id:activePaymentBooking.id,p_method:method,p_amount:amount,p_proof_path:proofPath,p_notes:document.getElementById("paymentNotes").value.trim()||null});
+        if(error)throw error;
+        closeModal("paymentModal");toast("Pembayaran dikirim untuk verifikasi.");await Promise.all([loadBookings(),loadPayments()]);
+      }catch(error){
+        const special={BAD_AMOUNT:"Nominal pembayaran tidak sesuai batas tagihan.",PROOF_REQUIRED:"Upload bukti pembayaran untuk QRIS atau transfer.",PROOF_TOO_LARGE:"Bukti pembayaran maksimal 5 MB."};
+        msg("paymentMessage",special[error.message]||friendly(rpcError(error)));
+      }finally{busy(btn,false,"Mengirim...","Kirim untuk Verifikasi")}
+    });
+
+    document.getElementById("rescheduleSubmit").addEventListener("click",async()=>{
+      clearMsg("rescheduleMessage");const slot=document.getElementById("rescheduleSlot").value;if(!slot){msg("rescheduleMessage","Pilih jadwal baru.");return}
+      const btn=document.getElementById("rescheduleSubmit");busy(btn,true,"Menyimpan...","Simpan Jadwal Baru");
+      const {error}=await supabase.rpc("reschedule_member_booking",{p_booking_id:activeRescheduleBooking.id,p_new_slot_id:slot});
+      if(error){msg("rescheduleMessage",friendly(rpcError(error)))}else{closeModal("rescheduleModal");toast("Jadwal berhasil diubah.");await loadBookings()}
+      busy(btn,false,"Menyimpan...","Simpan Jadwal Baru");
+    });
+
+    document.getElementById("logoutButton").addEventListener("click",async()=>{await supabase.auth.signOut();location.replace("./")});
+
+    if(await requireSession()){
+      await loadSettings();
+      await Promise.all([loadProfile(),loadPoints(),loadServices(),loadBookings(),loadPayments()]);
+      if(new URLSearchParams(location.search).get("panel"))setPanel(new URLSearchParams(location.search).get("panel"));
+    }
+  </script>
+</body>
+</html>
