@@ -1,529 +1,581 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Starpoint Garage</title>
-
-    <meta
-        name="description"
-        content="Starpoint Garage - Automotive Service, Repair & Performance."
-    >
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #0b0b0b;
-            color: #ffffff;
-            line-height: 1.6;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        /* HEADER */
-
-        header {
-            background: #111111;
-            border-bottom: 1px solid #333333;
-            padding: 35px 20px;
-            text-align: center;
-        }
-.logo {
-    width: 280px;
-    max-width: 80%;
-    height: auto;
-    display: block;
-    margin: 0 auto 20px;
-}
-        header h1 {
-            font-size: 34px;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
-        }
-
-        header p {
-            color: #aaaaaa;
-            font-size: 17px;
-        }
-
-        nav {
-            margin-top: 25px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        nav a {
-            display: inline-block;
-            padding: 10px 20px;
-            border: 1px solid #444444;
-            border-radius: 8px;
-            transition: 0.2s;
-        }
-
-        nav a:hover {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        /* MAIN */
-
-        main {
-            max-width: 1100px;
-            margin: auto;
-            padding: 45px 20px;
-        }
-
-        section {
-            margin-bottom: 80px;
-            scroll-margin-top: 25px;
-        }
-
-        section > h2 {
-            text-align: center;
-            font-size: 32px;
-            margin-bottom: 35px;
-        }
-
-        /* HERO */
-
-        .hero {
-            background: #151515;
-            border: 1px solid #292929;
-            border-radius: 18px;
-            padding: 70px 30px;
-            text-align: center;
-        }
-
-        .hero h2 {
-            font-size: 42px;
-            margin-bottom: 20px;
-        }
-
-        .hero p {
-            max-width: 700px;
-            margin: 0 auto 30px;
-            color: #bbbbbb;
-            font-size: 18px;
-        }
-
-        .button {
-            display: inline-block;
-            background: #ffffff;
-            color: #000000;
-            padding: 14px 28px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .button:hover {
-            background: #dddddd;
-            transform: translateY(-2px);
-        }
-
-        .button-dark {
-            background: transparent;
-            color: #ffffff;
-            border: 1px solid #555555;
-            margin-left: 8px;
-        }
-
-        .button-dark:hover {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        /* SERVICES */
-
-        .services {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .card {
-            background: #151515;
-            border: 1px solid #292929;
-            border-radius: 14px;
-            padding: 28px;
-            transition: 0.2s;
-        }
-
-        .card:hover {
-            border-color: #555555;
-            transform: translateY(-4px);
-        }
-
-        .card h3 {
-            font-size: 21px;
-            margin-bottom: 12px;
-        }
-
-        .card p {
-            color: #aaaaaa;
-            font-size: 15px;
-        }
-
-        /* ABOUT */
-
-        .about {
-            background: #151515;
-            border: 1px solid #292929;
-            border-radius: 14px;
-            padding: 35px;
-            text-align: center;
-        }
-
-        .about p {
-            max-width: 800px;
-            margin: auto;
-            color: #bbbbbb;
-            font-size: 17px;
-        }
-
-        /* CONTACT */
-
-        .contact {
-            background: #151515;
-            border: 1px solid #292929;
-            border-radius: 14px;
-            padding: 40px 25px;
-            text-align: center;
-        }
-
-        .contact p {
-            color: #bbbbbb;
-            margin-bottom: 25px;
-        }
-
-        .contact-info {
-            margin-bottom: 25px;
-        }
-
-        .contact-info strong {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .contact-info span {
-            color: #aaaaaa;
-        }
-
-        /* FOOTER */
-
-        footer {
-            background: #111111;
-            border-top: 1px solid #333333;
-            text-align: center;
-            padding: 30px 20px;
-            color: #888888;
-            font-size: 14px;
-        }
-
-        /* MOBILE */
-
-        @media (max-width: 800px) {
-
-            header h1 {
-                font-size: 29px;
-            }
-
-            .hero {
-                padding: 50px 20px;
-            }
-
-            .hero h2 {
-                font-size: 32px;
-            }
-
-            .hero p {
-                font-size: 16px;
-            }
-
-            .services {
-                grid-template-columns: 1fr;
-            }
-
-            section > h2 {
-                font-size: 28px;
-            }
-
-            .button {
-                display: block;
-                width: 100%;
-                max-width: 300px;
-                margin: 10px auto;
-            }
-
-            .button-dark {
-                margin: 10px auto;
-            }
-        }
-
-        @media (max-width: 480px) {
-
-            header {
-                padding: 28px 15px;
-            }
-
-            header h1 {
-                font-size: 26px;
-                letter-spacing: 2px;
-            }
-
-            nav a {
-                padding: 9px 15px;
-            }
-
-            main {
-                padding: 30px 15px;
-            }
-
-            .hero {
-                padding: 40px 18px;
-            }
-
-            .hero h2 {
-                font-size: 28px;
-            }
-
-            .card {
-                padding: 23px;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090909">
+  <meta name="description" content="Starpoint Garage - automotive care, detailing, treatment, dan layanan member.">
+  <title>Starpoint Garage</title>
+  <style>
+    :root{
+      --bg:#090909;--surface:#121212;--surface2:#181818;--line:#2a2a2a;
+      --text:#f5f5f5;--muted:#aaa;--soft:#d5d5d5;--accent:#fff;--danger:#ffb4b4;--ok:#baf0cb;
+      --radius:18px;--shadow:0 28px 80px rgba(0,0,0,.42)
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+    body.modal-open{overflow:hidden}
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .wrap{width:min(1120px,calc(100% - 32px));margin:auto}
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(9,9,9,.9);backdrop-filter:blur(16px);border-bottom:1px solid #1f1f1f}
+    .nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.04em}
+    .brand img{width:54px;height:38px;object-fit:contain}
+    .navlinks{display:flex;align-items:center;gap:22px;color:#c4c4c4;font-size:14px}
+    .navlinks a:hover{color:#fff}
+    .member-btn,.primary-btn,.secondary-btn{border-radius:12px;padding:11px 17px;font-weight:800;border:1px solid transparent;transition:.18s}
+    .member-btn,.primary-btn{background:#fff;color:#050505}
+    .member-btn:hover,.primary-btn:hover{transform:translateY(-1px);background:#e7e7e7}
+    .secondary-btn{background:transparent;border-color:#3a3a3a;color:#fff}
+    .secondary-btn:hover{border-color:#777}
+    .hero{padding:92px 0 70px}
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:stretch}
+    .hero-main,.hero-side{border:1px solid var(--line);background:linear-gradient(145deg,#151515,#0d0d0d);border-radius:26px}
+    .hero-main{padding:58px}
+    .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.18em;color:#9d9d9d;font-weight:800}
+    .hero h1{font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-.04em;max-width:760px;margin:18px 0 24px}
+    .hero p{color:#b8b8b8;font-size:18px;max-width:680px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+    .hero-side{padding:34px;display:flex;flex-direction:column;justify-content:space-between;min-height:330px}
+    .hero-logo{width:100%;max-height:190px;object-fit:contain;filter:drop-shadow(0 16px 30px rgba(255,255,255,.06))}
+    .mini-copy{color:#9d9d9d;font-size:14px;border-top:1px solid #292929;padding-top:20px;margin-top:22px}
+    section{padding:64px 0}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:26px}
+    .section-head h2{font-size:clamp(30px,4vw,46px);letter-spacing:-.03em}
+    .section-head p{color:#999;max-width:540px}
+    .services{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px;min-height:185px}
+    .card .num{color:#777;font-size:12px;font-weight:800;letter-spacing:.16em}
+    .card h3{font-size:20px;margin:28px 0 8px}
+    .card p{color:#9f9f9f;font-size:14px}
+    .membership{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px}
+    .member-copy,.member-features{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:34px}
+    .member-copy h2{font-size:38px;line-height:1.05;margin:12px 0 16px}
+    .member-copy p{color:#aaa;margin-bottom:24px}
+    .feature{padding:18px 0;border-bottom:1px solid #292929;display:flex;gap:16px}
+    .feature:last-child{border-bottom:0}
+    .feature b{display:block;margin-bottom:3px}
+    .feature span{display:block;color:#999;font-size:14px}
+    .badge{width:34px;height:34px;flex:0 0 34px;border:1px solid #414141;border-radius:10px;display:grid;place-items:center;font-size:12px}
+    .contact{background:linear-gradient(135deg,#171717,#101010);border:1px solid var(--line);border-radius:24px;padding:42px;display:flex;justify-content:space-between;align-items:center;gap:28px}
+    .contact h2{font-size:36px;line-height:1.1;margin-bottom:10px}
+    .contact p{color:#aaa}
+    footer{padding:34px 0 44px;color:#777;font-size:13px}
+    .footer-row{display:flex;justify-content:space-between;gap:20px;border-top:1px solid #1f1f1f;padding-top:26px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(9px);z-index:50;display:none;padding:22px;overflow:auto}
+    .modal-backdrop.open{display:grid;place-items:center}
+    .modal{width:min(100%,520px);background:#111;border:1px solid #303030;border-radius:24px;box-shadow:var(--shadow);overflow:hidden;margin:auto}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;padding:20px 22px;border-bottom:1px solid #292929}
+    .modal-title{font-weight:900}
+    .close-btn{width:38px;height:38px;border-radius:10px;border:1px solid #333;background:#171717;color:#fff;font-size:20px}
+    .modal-body{padding:24px}
+    .auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:#0b0b0b;border:1px solid #252525;border-radius:12px;padding:4px;margin-bottom:24px}
+    .auth-tab{border:0;background:transparent;color:#888;border-radius:9px;padding:10px;font-weight:800}
+    .auth-tab.active{background:#242424;color:#fff}
+    .view{display:none}.view.active{display:block}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field{margin-bottom:14px}.field.full{grid-column:1/-1}
+    label{display:block;color:#c4c4c4;font-size:13px;margin-bottom:6px}
+    input{width:100%;background:#0b0b0b;color:#fff;border:1px solid #363636;border-radius:11px;padding:13px 14px;outline:none;font-size:16px}
+    input:focus{border-color:#777}
+    .hint{color:#777;font-size:12px;margin-top:5px}
+    .form-btn{width:100%;margin-top:6px}
+    .text-btn{border:0;background:transparent;color:#cfcfcf;text-decoration:underline;padding:10px 0;font-size:13px}
+    .auth-message{display:none;margin-bottom:16px;padding:11px 13px;border-radius:11px;font-size:13px}
+    .auth-message.show{display:block}.auth-message.error{background:#2b1111;color:var(--danger)}.auth-message.ok{background:#102219;color:var(--ok)}
+    .dashboard{display:none}.dashboard.active{display:block}
+    .member-id{padding:20px;border-radius:18px;border:1px solid #313131;background:linear-gradient(140deg,#1b1b1b,#0d0d0d);margin-bottom:18px}
+    .member-id .status{display:inline-block;border:1px solid #414141;border-radius:999px;padding:5px 9px;color:#bbb;font-size:11px;text-transform:uppercase;letter-spacing:.12em}
+    .member-id h3{font-size:26px;margin:14px 0 2px}.member-id .username{color:#999}
+    .member-code{font-size:12px;color:#777;margin-top:17px;letter-spacing:.08em}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+    .stat{background:#0b0b0b;border:1px solid #292929;border-radius:14px;padding:15px}
+    .stat span{display:block;color:#777;font-size:12px}.stat strong{font-size:20px}
+    .dash-list{border:1px solid #292929;border-radius:14px;overflow:hidden;margin-bottom:18px}
+    .dash-row{display:flex;justify-content:space-between;gap:18px;padding:13px 15px;border-bottom:1px solid #252525;font-size:13px}
+    .dash-row:last-child{border-bottom:0}.dash-row span:first-child{color:#888}.dash-row span:last-child{text-align:right}
+    .logout-btn{width:100%}
+    .loading{color:#999;text-align:center;padding:22px}
+    .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#fff;color:#000;padding:12px 17px;border-radius:12px;font-size:13px;font-weight:800;z-index:80;transition:.2s}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:820px){
+      .navlinks a{display:none}.hero{padding-top:48px}.hero-grid,.membership{grid-template-columns:1fr}.hero-main{padding:34px}.hero-side{min-height:260px}.services{grid-template-columns:1fr 1fr}.contact{align-items:flex-start;flex-direction:column}
+    }
+    @media(max-width:560px){
+      .wrap{width:min(100% - 24px,1120px)}.nav{height:64px}.brand span{font-size:14px}.brand img{width:45px}.member-btn{padding:9px 12px;font-size:13px}
+      .hero h1{font-size:43px}.hero-main,.hero-side{border-radius:20px}.hero-main{padding:28px 22px}.hero p{font-size:16px}.hero-actions .primary-btn,.hero-actions .secondary-btn{width:100%;text-align:center}
+      section{padding:44px 0}.section-head{align-items:flex-start;flex-direction:column}.services{grid-template-columns:1fr}.card{min-height:160px}.contact{padding:28px 22px}
+      .modal-backdrop{padding:10px;align-items:end}.modal{border-radius:22px 22px 16px 16px}.modal-body{padding:20px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.footer-row{flex-direction:column}
+    }
+  </style>
 </head>
-
 <body>
+  <header class="topbar">
+    <div class="wrap nav">
+      <a href="#home" class="brand">
+        <img src="IMG_0461.png" alt="Starpoint Garage">
+        <span>STARPOINT GARAGE</span>
+      </a>
+      <nav class="navlinks" aria-label="Navigasi utama">
+        <a href="#services">Layanan</a>
+        <a href="#member">Member</a>
+        <a href="#contact">Kontak</a>
+        <button class="member-btn" id="memberButton" type="button">Login Member</button>
+      </nav>
+    </div>
+  </header>
 
-    <!-- HEADER -->
+  <main id="home">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-main">
+          <div class="eyebrow">Automotive Care · Balikpapan</div>
+          <h1>Care your car. Build your point.</h1>
+          <p>Starpoint Garage menggabungkan layanan perawatan kendaraan dengan sistem member, booking, reward, dan riwayat layanan dalam satu pengalaman digital.</p>
+          <div class="hero-actions">
+            <button class="primary-btn" id="heroMemberButton" type="button">Masuk Area Member</button>
+            <a class="secondary-btn" href="#services">Lihat Layanan</a>
+          </div>
+        </div>
+        <div class="hero-side">
+          <img src="IMG_0461.png" class="hero-logo" alt="Logo Starpoint Garage">
+          <div class="mini-copy">Daftar member tanpa OTP. Gunakan username untuk login dan email untuk pemulihan password.</div>
+        </div>
+      </div>
+    </section>
 
-    <header id="home">
-<header id="home">
+    <section id="services">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Starpoint Services</div>
+            <h2>Perawatan dalam satu ekosistem.</h2>
+          </div>
+          <p>Detail harga dan slot booking tersedia untuk member setelah login. Konfigurasi layanan dikelola langsung dari sistem Starpoint.</p>
+        </div>
+        <div class="services">
+          <article class="card"><div class="num">01</div><h3>Car Wash & Care</h3><p>Perawatan kebersihan kendaraan untuk kebutuhan rutin maupun treatment lebih detail.</p></article>
+          <article class="card"><div class="num">02</div><h3>Detailing</h3><p>Treatment eksterior dan interior dengan fokus pada kebersihan, finishing, dan proteksi.</p></article>
+          <article class="card"><div class="num">03</div><h3>Coating</h3><p>Proteksi permukaan kendaraan dengan pencatatan warranty dan maintenance di sistem member.</p></article>
+          <article class="card"><div class="num">04</div><h3>Booking Treatment</h3><p>Pilih layanan dan slot yang tersedia, lalu lakukan pembayaran DP sesuai ketentuan Starpoint.</p></article>
+          <article class="card"><div class="num">05</div><h3>Point & Reward</h3><p>Aktivitas dan transaksi yang memenuhi syarat dapat membentuk saldo point serta level membership.</p></article>
+          <article class="card"><div class="num">06</div><h3>Member Community</h3><p>Akses fitur komunitas, story, referral, promo, dan benefit member dalam satu akun.</p></article>
+        </div>
+      </div>
+    </section>
 
-    <img src="IMG_0461.png"
-         alt="Starpoint Garage Logo"
-         class="logo">
+    <section id="member">
+      <div class="wrap membership">
+        <div class="member-copy">
+          <div class="eyebrow">Starpoint Member</div>
+          <h2>Satu akun untuk seluruh perjalanan kendaraanmu.</h2>
+          <p>Member menggunakan username dan password untuk login. Email dipakai sebagai identitas akun dan jalur reset password.</p>
+          <button class="primary-btn" id="sectionMemberButton" type="button">Daftar / Login Member</button>
+        </div>
+        <div class="member-features">
+          <div class="feature"><div class="badge">01</div><div><b>Member ID & QR</b><span>Identitas member dibuat otomatis oleh sistem dan terhubung ke proses check-in.</span></div></div>
+          <div class="feature"><div class="badge">02</div><div><b>Booking & pembayaran manual</b><span>Booking terhubung ke slot layanan. Pembayaran diverifikasi oleh staff tanpa gateway Duitku.</span></div></div>
+          <div class="feature"><div class="badge">03</div><div><b>Point, level & reward</b><span>Riwayat point tersimpan sebagai ledger sehingga setiap penambahan atau penggunaan dapat ditelusuri.</span></div></div>
+        </div>
+      </div>
+    </section>
 
-    <h1>Starpoint Garage</h1>
+    <section id="contact">
+      <div class="wrap">
+        <div class="contact">
+          <div>
+            <div class="eyebrow">Contact Starpoint</div>
+            <h2>Butuh bantuan?</h2>
+            <p>Hubungi Starpoint Garage melalui WhatsApp atau email.</p>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="https://wa.me/6281345115758" target="_blank" rel="noopener">WhatsApp</a>
+            <a class="secondary-btn" href="mailto:starpointgarageindonesia@gmail.com">Email</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-    <p>Automotive Service &amp; Performance</p>
-        <h1>Starpoint Garage</h1>
+  <footer>
+    <div class="wrap footer-row">
+      <span>© 2026 Starpoint Garage. All rights reserved.</span>
+      <span>Member system powered by Starpoint Garage.</span>
+    </div>
+  </footer>
 
-        <p>Automotive Service &amp; Performance</p>
+  <div class="modal-backdrop" id="memberModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Starpoint Member</div>
+        <button class="close-btn" id="closeModal" type="button" aria-label="Tutup">×</button>
+      </div>
 
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#services">Services</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-        </nav>
+      <div class="modal-body" id="authArea">
+        <div class="auth-message" id="authMessage"></div>
 
-    </header>
+        <div id="guestArea">
+          <div class="auth-tabs">
+            <button class="auth-tab active" data-view="login" type="button">Login</button>
+            <button class="auth-tab" data-view="register" type="button">Daftar</button>
+          </div>
 
+          <div class="view active" id="loginView">
+            <form id="loginForm">
+              <div class="field">
+                <label for="loginUsername">Username</label>
+                <input id="loginUsername" autocomplete="username" required placeholder="username">
+              </div>
+              <div class="field">
+                <label for="loginPassword">Password</label>
+                <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Password">
+              </div>
+              <button class="primary-btn form-btn" id="loginSubmit" type="submit">Login</button>
+              <button class="text-btn" id="forgotButton" type="button">Lupa password?</button>
+            </form>
+          </div>
 
-    <!-- MAIN -->
-
-    <main>
-
-        <!-- HERO -->
-
-        <section class="hero">
-
-            <h2>Welcome to Starpoint Garage</h2>
-
-            <p>
-                Tempat untuk perawatan, perbaikan, dan pengembangan
-                kendaraan dengan pendekatan yang profesional.
-            </p>
-
-            <a href="#services" class="button">
-                Lihat Services
-            </a>
-
-            <a href="#contact" class="button button-dark">
-                Hubungi Kami
-            </a>
-
-        </section>
-
-
-        <!-- SERVICES -->
-
-        <section id="services">
-
-            <h2>Our Services</h2>
-
-            <div class="services">
-
-                <div class="card">
-                    <h3>General Service</h3>
-
-                    <p>
-                        Perawatan rutin kendaraan untuk menjaga
-                        performa dan kondisi mesin tetap optimal.
-                    </p>
+          <div class="view" id="registerView">
+            <form id="registerForm">
+              <div class="form-grid">
+                <div class="field full">
+                  <label for="fullName">Nama lengkap</label>
+                  <input id="fullName" autocomplete="name" required placeholder="Nama lengkap">
                 </div>
-
-
-                <div class="card">
-                    <h3>Engine Repair</h3>
-
-                    <p>
-                        Pemeriksaan dan perbaikan mesin kendaraan
-                        untuk mengatasi berbagai masalah performa.
-                    </p>
+                <div class="field">
+                  <label for="username">Username</label>
+                  <input id="username" autocomplete="username" required minlength="4" maxlength="20" pattern="[a-zA-Z0-9._]+" placeholder="contoh: rizky.h">
+                  <div class="hint">4–20 karakter: huruf, angka, titik, underscore.</div>
                 </div>
-
-
-                <div class="card">
-                    <h3>Electrical</h3>
-
-                    <p>
-                        Pemeriksaan sistem kelistrikan kendaraan,
-                        termasuk aki, sensor, lampu, dan sistem elektronik.
-                    </p>
+                <div class="field">
+                  <label for="birthDate">Tanggal lahir</label>
+                  <input id="birthDate" type="date" required>
                 </div>
-
-
-                <div class="card">
-                    <h3>Performance</h3>
-
-                    <p>
-                        Pengembangan performa kendaraan sesuai
-                        kebutuhan dan karakter penggunaan.
-                    </p>
+                <div class="field full">
+                  <label for="email">Email</label>
+                  <input id="email" type="email" autocomplete="email" required placeholder="nama@email.com">
                 </div>
-
-
-                <div class="card">
-                    <h3>Maintenance</h3>
-
-                    <p>
-                        Perawatan berkala untuk membantu menjaga
-                        kendaraan tetap aman dan siap digunakan.
-                    </p>
+                <div class="field full">
+                  <label for="password">Password</label>
+                  <input id="password" type="password" autocomplete="new-password" required minlength="8" placeholder="Minimal 8 karakter">
+                  <div class="hint">Minimal 8 karakter dan mengandung huruf serta angka.</div>
                 </div>
-
-
-                <div class="card">
-                    <h3>Vehicle Inspection</h3>
-
-                    <p>
-                        Pemeriksaan kondisi kendaraan untuk membantu
-                        menemukan masalah sebelum menjadi lebih serius.
-                    </p>
+                <div class="field full">
+                  <label for="referralCode">Kode referral (opsional)</label>
+                  <input id="referralCode" placeholder="Kode referral">
                 </div>
+              </div>
+              <button class="primary-btn form-btn" id="registerSubmit" type="submit">Buat Akun Member</button>
+            </form>
+          </div>
 
+          <div class="view" id="forgotView">
+            <p style="color:#aaa;margin-bottom:18px">Masukkan email akun member. Jika email terdaftar, kami akan mengirim link untuk membuat password baru.</p>
+            <form id="forgotForm">
+              <div class="field">
+                <label for="forgotEmail">Email</label>
+                <input id="forgotEmail" type="email" autocomplete="email" required placeholder="nama@email.com">
+              </div>
+              <button class="primary-btn form-btn" id="forgotSubmit" type="submit">Kirim Link Reset</button>
+              <button class="text-btn" id="backLoginButton" type="button">Kembali ke login</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="dashboard" id="dashboardArea">
+          <div id="dashboardLoading" class="loading">Memuat akun member...</div>
+          <div id="dashboardContent" style="display:none">
+            <div class="member-id">
+              <span class="status" id="memberStatus">MEMBER</span>
+              <h3 id="memberName">Member Starpoint</h3>
+              <div class="username" id="memberUsername">@username</div>
+              <div class="member-code" id="memberCode">MEMBER CODE</div>
             </div>
-
-        </section>
-
-
-        <!-- ABOUT -->
-
-        <section id="about">
-
-            <h2>About Starpoint Garage</h2>
-
-            <div class="about">
-
-                <p>
-                    Starpoint Garage adalah konsep automotive garage
-                    yang berfokus pada perawatan, perbaikan, dan
-                    pengembangan kendaraan.
-
-                    <br><br>
-
-                    Website ini dibuat sebagai halaman resmi
-                    Starpoint Garage dan menjadi pusat informasi
-                    mengenai layanan serta kontak kami.
-                </p>
-
+            <div class="stats">
+              <div class="stat"><span>Point aktif</span><strong id="pointBalance">0</strong></div>
+              <div class="stat"><span>Qualifying point</span><strong id="qualifyingPoints">0</strong></div>
             </div>
-
-        </section>
-
-
-        <!-- CONTACT -->
-
-        <section id="contact">
-
-            <h2>Contact</h2>
-
-            <div class="contact">
-
-                <p>
-                    Untuk informasi lebih lanjut mengenai layanan
-                    Starpoint Garage, silakan hubungi kami.
-                </p>
-
-
-                <div class="contact-info">
-
-                    <strong>Email</strong>
-
-                    <span>
-                        starpointgarageindonesia@gmail.com
-                    </span>
-
-                </div>
-
-
-                <!--
-                    GANTI NOMOR DI BAWAH DENGAN NOMOR WHATSAPP
-                    STARPOINT GARAGE.
-                -->
-
-                <a
-                    href="https://wa.me/6281345115758"
-                    class="button"
-                    target="_blank"
-                >
-                    WhatsApp
-                </a>
-
-
-                <a
-                    href="mailto:starpointgarage@gmail.com"
-                    class="button button-dark"
-                >
-                    Email Us
-                </a>
-
+            <div class="dash-list">
+              <div class="dash-row"><span>Email</span><span id="memberEmail">-</span></div>
+              <div class="dash-row"><span>Kode referral</span><span id="memberReferral">-</span></div>
+              <div class="dash-row"><span>Tanggal lahir</span><span id="memberBirthDate">-</span></div>
             </div>
+            <button class="secondary-btn logout-btn" id="logoutButton" type="button">Keluar dari Akun</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        </section>
+  <div class="toast" id="toast"></div>
 
-    </main>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+    const SUPABASE_URL = "https://lscwmlxsvmakhnzknvrr.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_xP2C7pPrFpjzbo4WS-C2sw_pYi5hHph";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    <!-- FOOTER -->
+    const modal = document.getElementById("memberModal");
+    const memberButton = document.getElementById("memberButton");
+    const guestArea = document.getElementById("guestArea");
+    const dashboardArea = document.getElementById("dashboardArea");
+    const authMessage = document.getElementById("authMessage");
+    let currentSession = null;
 
-    <footer>
+    function showMessage(text, type) {
+      authMessage.textContent = text;
+      authMessage.className = "auth-message show " + (type || "error");
+    }
 
-        <p>
-            &copy; 2026 Starpoint Garage. All rights reserved.
-        </p>
+    function clearMessage() {
+      authMessage.textContent = "";
+      authMessage.className = "auth-message";
+    }
 
-    </footer>
+    function showToast(text) {
+      const toast = document.getElementById("toast");
+      toast.textContent = text;
+      toast.classList.add("show");
+      setTimeout(function(){ toast.classList.remove("show"); }, 2600);
+    }
 
+    function openModal() {
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden","false");
+      document.body.classList.add("modal-open");
+      clearMessage();
+      if (currentSession) loadDashboard();
+    }
+
+    function closeModal() {
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden","true");
+      document.body.classList.remove("modal-open");
+    }
+
+    function setView(name) {
+      document.querySelectorAll(".view").forEach(function(el){ el.classList.remove("active"); });
+      const selected = document.getElementById(name + "View");
+      if (selected) selected.classList.add("active");
+      document.querySelectorAll(".auth-tab").forEach(function(btn){
+        btn.classList.toggle("active", btn.dataset.view === name);
+      });
+      clearMessage();
+    }
+
+    function setBusy(button, busy, busyText, normalText) {
+      button.disabled = busy;
+      button.textContent = busy ? busyText : normalText;
+    }
+
+    async function callMemberAuth(payload) {
+      const response = await supabase.functions.invoke("member-auth", { body: payload });
+      if (response.error) {
+        let code = "REQUEST_FAILED";
+        try {
+          if (response.error.context) {
+            const body = await response.error.context.json();
+            code = body.error || code;
+          }
+        } catch (_) {}
+        throw new Error(code);
+      }
+      if (response.data && response.data.error) throw new Error(response.data.error);
+      return response.data;
+    }
+
+    function errorText(code) {
+      const messages = {
+        INVALID_CREDENTIALS:"Username atau password salah.",
+        ACCOUNT_SUSPENDED:"Akun ini sedang ditangguhkan.",
+        USERNAME_TAKEN:"Username sudah digunakan.",
+        EMAIL_TAKEN:"Email sudah digunakan.",
+        INVALID_USERNAME:"Format username belum sesuai.",
+        INVALID_EMAIL:"Format email belum valid.",
+        WEAK_PASSWORD:"Password minimal 8 karakter dan harus mengandung huruf serta angka.",
+        INVALID_BIRTH_DATE:"Tanggal lahir belum valid.",
+        REFERRAL_CODE_NOT_FOUND:"Kode referral tidak ditemukan.",
+        FULL_NAME_REQUIRED:"Nama lengkap wajib diisi.",
+        RESET_REQUEST_FAILED:"Link reset belum dapat dikirim. Coba lagi.",
+        REGISTER_FAILED:"Pendaftaran belum berhasil. Periksa data lalu coba lagi.",
+        SESSION_CREATE_FAILED:"Akun dibuat tetapi sesi login gagal. Silakan login.",
+        REQUEST_FAILED:"Koneksi ke server belum berhasil. Coba lagi."
+      };
+      return messages[code] || "Terjadi kendala. Silakan coba lagi.";
+    }
+
+    async function applySession(sessionData) {
+      const result = await supabase.auth.setSession({
+        access_token: sessionData.access_token,
+        refresh_token: sessionData.refresh_token
+      });
+      if (result.error) throw result.error;
+      currentSession = result.data.session;
+      updateSessionUI();
+    }
+
+    function updateSessionUI() {
+      const signedIn = !!currentSession;
+      guestArea.style.display = signedIn ? "none" : "block";
+      dashboardArea.classList.toggle("active", signedIn);
+      memberButton.textContent = signedIn ? "Akun Member" : "Login Member";
+      if (!signedIn) {
+        document.getElementById("dashboardContent").style.display = "none";
+        document.getElementById("dashboardLoading").style.display = "block";
+      }
+    }
+
+    async function loadDashboard() {
+      if (!currentSession || !currentSession.user) return;
+      document.getElementById("dashboardLoading").style.display = "block";
+      document.getElementById("dashboardContent").style.display = "none";
+
+      const userId = currentSession.user.id;
+      const profileResult = await supabase
+        .from("member_profiles")
+        .select("member_code,username,email,full_name,birth_date,referral_code,status")
+        .eq("user_id", userId)
+        .single();
+
+      if (profileResult.error || !profileResult.data) {
+        document.getElementById("dashboardLoading").textContent = "Profil member belum dapat dimuat.";
+        return;
+      }
+
+      const pointsResult = await supabase
+        .from("point_ledger")
+        .select("delta,qualifying_delta")
+        .eq("member_id", userId);
+
+      let balance = 0;
+      let qualifying = 0;
+      if (!pointsResult.error && Array.isArray(pointsResult.data)) {
+        pointsResult.data.forEach(function(row){
+          balance += Number(row.delta || 0);
+          qualifying += Number(row.qualifying_delta || 0);
+        });
+      }
+
+      const p = profileResult.data;
+      document.getElementById("memberStatus").textContent = String(p.status || "member").toUpperCase();
+      document.getElementById("memberName").textContent = p.full_name || "Member Starpoint";
+      document.getElementById("memberUsername").textContent = "@" + (p.username || "-");
+      document.getElementById("memberCode").textContent = p.member_code || "-";
+      document.getElementById("memberEmail").textContent = p.email || "-";
+      document.getElementById("memberReferral").textContent = p.referral_code || "-";
+      document.getElementById("memberBirthDate").textContent = p.birth_date || "-";
+      document.getElementById("pointBalance").textContent = balance.toLocaleString("id-ID");
+      document.getElementById("qualifyingPoints").textContent = qualifying.toLocaleString("id-ID");
+      document.getElementById("dashboardLoading").style.display = "none";
+      document.getElementById("dashboardContent").style.display = "block";
+    }
+
+    [memberButton, document.getElementById("heroMemberButton"), document.getElementById("sectionMemberButton")].forEach(function(btn){
+      btn.addEventListener("click", openModal);
+    });
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    modal.addEventListener("click", function(event){ if(event.target === modal) closeModal(); });
+    document.addEventListener("keydown", function(event){ if(event.key === "Escape") closeModal(); });
+
+    document.querySelectorAll(".auth-tab").forEach(function(btn){
+      btn.addEventListener("click", function(){ setView(btn.dataset.view); });
+    });
+    document.getElementById("forgotButton").addEventListener("click", function(){ setView("forgot"); });
+    document.getElementById("backLoginButton").addEventListener("click", function(){ setView("login"); });
+
+    document.getElementById("loginForm").addEventListener("submit", async function(event){
+      event.preventDefault();
+      clearMessage();
+      const button = document.getElementById("loginSubmit");
+      setBusy(button,true,"Memproses...","Login");
+      try {
+        const data = await callMemberAuth({
+          action:"login",
+          username:document.getElementById("loginUsername").value.trim().toLowerCase(),
+          password:document.getElementById("loginPassword").value
+        });
+        await applySession(data.session);
+        await loadDashboard();
+      } catch (error) {
+        showMessage(errorText(error.message),"error");
+      } finally {
+        setBusy(button,false,"Memproses...","Login");
+      }
+    });
+
+    document.getElementById("registerForm").addEventListener("submit", async function(event){
+      event.preventDefault();
+      clearMessage();
+      const button = document.getElementById("registerSubmit");
+      setBusy(button,true,"Membuat akun...","Buat Akun Member");
+      try {
+        const data = await callMemberAuth({
+          action:"register",
+          fullName:document.getElementById("fullName").value.trim(),
+          username:document.getElementById("username").value.trim().toLowerCase(),
+          email:document.getElementById("email").value.trim().toLowerCase(),
+          password:document.getElementById("password").value,
+          birthDate:document.getElementById("birthDate").value,
+          referralCode:document.getElementById("referralCode").value.trim() || null
+        });
+        await applySession(data.session);
+        document.getElementById("registerForm").reset();
+        showToast("Akun member berhasil dibuat.");
+        await loadDashboard();
+      } catch (error) {
+        showMessage(errorText(error.message),"error");
+      } finally {
+        setBusy(button,false,"Membuat akun...","Buat Akun Member");
+      }
+    });
+
+    document.getElementById("forgotForm").addEventListener("submit", async function(event){
+      event.preventDefault();
+      clearMessage();
+      const button = document.getElementById("forgotSubmit");
+      setBusy(button,true,"Mengirim...","Kirim Link Reset");
+      try {
+        const data = await callMemberAuth({
+          action:"forgot_password",
+          email:document.getElementById("forgotEmail").value.trim().toLowerCase()
+        });
+        showMessage((data && data.message) || "Jika email terdaftar, link reset password akan dikirim.","ok");
+        document.getElementById("forgotForm").reset();
+      } catch (error) {
+        showMessage(errorText(error.message),"error");
+      } finally {
+        setBusy(button,false,"Mengirim...","Kirim Link Reset");
+      }
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", async function(){
+      await supabase.auth.signOut();
+      currentSession = null;
+      updateSessionUI();
+      setView("login");
+      showToast("Kamu sudah keluar dari akun.");
+    });
+
+    supabase.auth.onAuthStateChange(function(_event, session){
+      currentSession = session;
+      updateSessionUI();
+    });
+
+    const initial = await supabase.auth.getSession();
+    currentSession = initial.data.session;
+    updateSessionUI();
+
+    const params = new URLSearchParams(location.search);
+    if (params.get("reset") === "success") {
+      setView("login");
+      openModal();
+      showMessage("Password berhasil diubah. Silakan login dengan password baru.","ok");
+      history.replaceState({}, "", location.pathname);
+    }
+  </script>
 </body>
 </html>
