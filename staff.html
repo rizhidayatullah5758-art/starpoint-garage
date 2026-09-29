@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Dashboard Staff Starpoint Garage">
+  <title>Staff Dashboard | Starpoint Garage</title>
+  <style>
+    :root{--bg:#080808;--surface:#121212;--surface2:#181818;--line:#2c2c2c;--text:#f4f4f4;--muted:#939393;--ok:#b8efc9;--warn:#ffd89d;--danger:#ffb4b4;--shadow:0 24px 80px rgba(0,0,0,.4)}
+    *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.55}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .shell{width:min(1220px,calc(100% - 28px));margin:auto}.topbar{position:sticky;top:0;z-index:40;background:rgba(8,8,8,.92);backdrop-filter:blur(16px);border-bottom:1px solid #1f1f1f}.toprow{height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.04em}.brand img{width:50px;height:36px;object-fit:contain}.role-badge{font-size:10px;padding:5px 8px;border:1px solid #3a3a3a;border-radius:999px;color:#aaa;text-transform:uppercase;letter-spacing:.1em}
+    .auth-page{min-height:calc(100vh - 68px);display:grid;place-items:center;padding:30px 0}.auth-card{width:min(100%,480px);background:#121212;border:1px solid #303030;border-radius:22px;padding:25px;box-shadow:var(--shadow)}.auth-card h1{font-size:31px;line-height:1.1;margin:8px 0 8px}.auth-card>p{color:#999;margin-bottom:20px}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:#0a0a0a;border:1px solid #292929;border-radius:12px;padding:4px;margin-bottom:18px}.auth-tab{border:0;background:transparent;color:#777;border-radius:9px;padding:10px;font-weight:900}.auth-tab.active{background:#242424;color:#fff}.auth-view{display:none}.auth-view.active{display:block}
+    .page{display:none;padding:30px 0 70px}.page.active{display:block}.head{display:flex;align-items:flex-end;justify-content:space-between;gap:22px;margin-bottom:22px}.eyebrow{text-transform:uppercase;letter-spacing:.16em;color:#737373;font-size:10px;font-weight:900}.head h1{font-size:clamp(30px,4.4vw,50px);letter-spacing:-.035em;line-height:1.03;margin-top:7px}.head p{color:#929292;max-width:540px}
+    .tabs{display:flex;gap:7px;overflow:auto;padding-bottom:5px;margin-bottom:20px}.tab{white-space:nowrap;border:1px solid #303030;background:#111;color:#888;border-radius:11px;padding:10px 14px;font-weight:900;font-size:13px}.tab.active{background:#fff;color:#000;border-color:#fff}.tab.owner-only{display:none}.tab.owner-only.show{display:block}
+    .panel{display:none}.panel.active{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.stat{background:#121212;border:1px solid #292929;border-radius:16px;padding:17px}.stat span{display:block;color:#777;font-size:11px;margin-bottom:5px}.stat strong{font-size:25px}.card{background:#121212;border:1px solid #2b2b2b;border-radius:19px;padding:21px}.card h2{font-size:21px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px}.muted{color:var(--muted)}.small{font-size:11px}
+    .field{margin-bottom:13px}.field label{display:block;color:#c2c2c2;font-size:11px;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;background:#090909;color:#fff;border:1px solid #363636;border-radius:11px;padding:12px 13px;outline:none}.field textarea{min-height:75px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:#777}.inline{display:grid;grid-template-columns:1fr 1fr;gap:10px}.check{display:flex;gap:8px;align-items:flex-start;color:#aaa;font-size:11px;margin:8px 0 14px}.check input{margin-top:3px}
+    .btn{border:1px solid transparent;border-radius:11px;padding:10px 13px;font-weight:900}.btn.primary{background:#fff;color:#050505}.btn.secondary{background:#171717;color:#fff;border-color:#363636}.btn.danger{background:#2a1111;color:#ffb4b4;border-color:#4c1f1f}.btn.warn{background:#261d0e;color:#ffd89d;border-color:#514020}.btn:disabled{opacity:.48;cursor:not-allowed}.btn.full{width:100%}.btn.tiny{font-size:10px;padding:7px 9px}
+    .message{display:none;border-radius:11px;padding:10px 12px;margin-bottom:13px;font-size:11px}.message.show{display:block}.message.error{background:#2a1111;color:var(--danger)}.message.ok{background:#102219;color:var(--ok)}
+    .list{display:grid;gap:10px}.item{background:#0d0d0d;border:1px solid #2a2a2a;border-radius:15px;padding:15px}.item-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.item h3{font-size:14px}.sub{color:#777;font-size:10px;margin-top:3px}.status{font-size:9px;text-transform:uppercase;letter-spacing:.09em;border:1px solid #3a3a3a;color:#bbb;border-radius:999px;padding:4px 7px;white-space:nowrap}.status.awaiting_payment,.status.waiting_verification{color:#ffd89d;border-color:#5a4525}.status.confirmed,.status.paid,.status.completed{color:#b8efc9;border-color:#285039}.status.cancelled,.status.failed,.status.no_show{color:#ffb4b4;border-color:#562323}.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:11px}.fact{background:#161616;border-radius:9px;padding:9px}.fact span{display:block;color:#696969;font-size:9px}.fact b{font-size:11px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.empty{border:1px dashed #343434;border-radius:14px;padding:25px;text-align:center;color:#727272}.loading{text-align:center;color:#777;padding:25px}
+    .proof{width:100%;max-height:380px;object-fit:contain;background:#080808;border-radius:12px;margin-top:10px}.proof-wrap{display:none}.proof-wrap.show{display:block}
+    .member-result{display:none}.member-result.show{display:block}.member-name{font-size:23px;font-weight:900}.member-meta{color:#8e8e8e;font-size:12px;margin-top:4px}.member-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}.mini-stat{background:#0a0a0a;border:1px solid #292929;border-radius:12px;padding:11px}.mini-stat span{display:block;color:#737373;font-size:9px}.mini-stat b{font-size:15px}
+    #reader{width:100%;border-radius:14px;overflow:hidden;background:#080808;margin:10px 0}.camera-row{display:flex;gap:8px;flex-wrap:wrap}
+    .slot-list{display:grid;gap:9px}.slot{border:1px solid #2b2b2b;background:#0d0d0d;border-radius:14px;padding:14px}.slot-top{display:flex;justify-content:space-between;gap:12px}.slot b{font-size:13px}.slot p{color:#777;font-size:10px;margin-top:4px}
+    .owner-block{display:none}.owner-block.show{display:block}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);opacity:0;background:#fff;color:#000;border-radius:11px;padding:11px 14px;font-size:11px;font-weight:900;z-index:100;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.head{align-items:flex-start;flex-direction:column}}
+    @media(max-width:560px){.shell{width:min(100% - 18px,1220px)}.toprow{height:61px}.brand span{font-size:12px}.role-badge{display:none}.page{padding-top:20px}.stats{grid-template-columns:1fr 1fr}.inline{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.card{padding:17px}.member-stats{grid-template-columns:1fr}.auth-page{min-height:calc(100vh - 61px);align-items:end}.auth-card{border-radius:20px 20px 12px 12px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell toprow">
+      <a class="brand" href="./"><img src="IMG_0461.png" alt="Starpoint Garage"><span>STARPOINT STAFF</span></a>
+      <span class="role-badge" id="topRole">STAFF ACCESS</span>
+    </div>
+  </header>
+
+  <section class="auth-page" id="authPage">
+    <div class="auth-card">
+      <div class="eyebrow">Internal Access</div>
+      <h1>Dashboard Staff</h1>
+      <p>Hanya email yang telah dimasukkan ke allowlist Starpoint yang dapat mengaktifkan akses.</p>
+      <div class="message" id="authMessage"></div>
+      <div class="auth-tabs"><button class="auth-tab active" data-auth="login" type="button">Login</button><button class="auth-tab" data-auth="activate" type="button">Aktivasi</button></div>
+
+      <div class="auth-view active" id="loginView">
+        <form id="loginForm">
+          <div class="field"><label for="loginEmail">Email staff</label><input id="loginEmail" type="email" autocomplete="email" required></div>
+          <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+          <button class="btn primary full" id="loginSubmit" type="submit">Login Staff</button>
+          <button class="btn secondary full" id="forgotButton" style="margin-top:8px" type="button">Lupa Password</button>
+        </form>
+      </div>
+
+      <div class="auth-view" id="activateView">
+        <form id="activateForm">
+          <div class="field"><label for="activateEmail">Email yang diizinkan</label><input id="activateEmail" type="email" autocomplete="email" required></div>
+          <div class="field"><label for="activatePassword">Buat password</label><input id="activatePassword" type="password" autocomplete="new-password" minlength="8" required><div class="small muted" style="margin-top:5px">Minimal 8 karakter, mengandung huruf dan angka.</div></div>
+          <button class="btn primary full" id="activateSubmit" type="submit">Aktifkan Akun Staff</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <main class="shell page" id="staffPage">
+    <div class="head">
+      <div><div class="eyebrow">Operations Dashboard</div><h1 id="staffGreeting">Starpoint Staff</h1></div>
+      <p>Booking, pembayaran manual, check-in member, dan treatment status dikelola dari satu dashboard.</p>
+    </div>
+
+    <nav class="tabs">
+      <button class="tab active" data-panel="overview" type="button">Ringkasan</button>
+      <button class="tab" data-panel="bookings" type="button">Booking</button>
+      <button class="tab" data-panel="payments" type="button">Verifikasi Bayar</button>
+      <button class="tab" data-panel="checkin" type="button">Check-in QR</button>
+      <button class="tab owner-only" data-panel="slots" type="button">Atur Slot</button>
+      <button class="tab" data-panel="account" type="button">Akun</button>
+    </nav>
+    <div class="message" id="pageMessage"></div>
+
+    <section class="panel active" id="overviewPanel">
+      <div class="stats">
+        <div class="stat"><span>Booking Hari Ini</span><strong id="sumBookings">0</strong></div>
+        <div class="stat"><span>Verifikasi Bayar</span><strong id="sumPayments">0</strong></div>
+        <div class="stat"><span>Dalam Treatment</span><strong id="sumTreatment">0</strong></div>
+        <div class="stat"><span>Revenue Hari Ini</span><strong id="sumRevenue">Rp0</strong></div>
+      </div>
+      <div class="grid">
+        <article class="card"><div class="section-head"><div><div class="eyebrow">Today</div><h2>Booking Hari Ini</h2></div><button class="btn secondary tiny" data-go="bookings" type="button">Semua Booking</button></div><div id="todayBookings" class="loading">Memuat...</div></article>
+        <article class="card"><div class="section-head"><div><div class="eyebrow">Action Needed</div><h2>Pembayaran Menunggu</h2></div><button class="btn secondary tiny" data-go="payments" type="button">Buka Verifikasi</button></div><div id="overviewPayments" class="loading">Memuat...</div></article>
+      </div>
+    </section>
+
+    <section class="panel" id="bookingsPanel">
+      <article class="card">
+        <div class="section-head"><div><div class="eyebrow">Operations</div><h2>Daftar Booking</h2></div><button class="btn secondary tiny" id="refreshBookings" type="button">Refresh</button></div>
+        <div class="inline" style="margin-bottom:12px">
+          <div class="field" style="margin:0"><label for="bookingFilter">Filter status</label><select id="bookingFilter"><option value="">Semua status</option><option value="awaiting_payment">Menunggu Pembayaran</option><option value="confirmed">Terkonfirmasi</option><option value="late">Terlambat</option><option value="in_treatment">Treatment</option><option value="completed">Selesai</option><option value="cancelled">Dibatalkan</option><option value="no_show">No Show</option></select></div>
+          <div class="field" style="margin:0"><label for="bookingSearch">Cari</label><input id="bookingSearch" placeholder="Booking code / member / kendaraan"></div>
+        </div>
+        <div id="bookingList" class="loading">Memuat booking...</div>
+      </article>
+    </section>
+
+    <section class="panel" id="paymentsPanel">
+      <article class="card">
+        <div class="section-head"><div><div class="eyebrow">Manual Payments</div><h2>Menunggu Verifikasi</h2></div><button class="btn secondary tiny" id="refreshPayments" type="button">Refresh</button></div>
+        <div id="paymentList" class="loading">Memuat pembayaran...</div>
+      </article>
+    </section>
+
+    <section class="panel" id="checkinPanel">
+      <div class="grid">
+        <article class="card">
+          <div class="section-head"><div><div class="eyebrow">Member QR</div><h2>Scan / Masukkan QR</h2></div></div>
+          <div class="message" id="checkinMessage"></div>
+          <div id="reader"></div>
+          <div class="camera-row"><button class="btn secondary" id="startCamera" type="button">Buka Kamera</button><button class="btn secondary" id="stopCamera" type="button" disabled>Tutup Kamera</button></div>
+          <div class="field" style="margin-top:13px"><label for="qrValue">Nilai QR</label><input id="qrValue" placeholder="SPGQ:... atau UUID"></div>
+          <button class="btn primary full" id="lookupButton" type="button">Cari Member</button>
+        </article>
+        <article class="card member-result" id="memberResult">
+          <div class="eyebrow">Member Found</div>
+          <div class="member-name" id="lookupName">-</div><div class="member-meta" id="lookupMeta">-</div>
+          <div class="member-stats"><div class="mini-stat"><span>Level</span><b id="lookupLevel">-</b></div><div class="mini-stat"><span>Reward Point</span><b id="lookupPoints">0</b></div><div class="mini-stat"><span>Last Check-in</span><b id="lookupLast">-</b></div></div>
+          <div class="field"><label for="checkinBooking">Booking terkait (opsional)</label><select id="checkinBooking"><option value="">Tanpa booking</option></select></div>
+          <div class="field"><label for="checkinPayment">Pembayaran terkait (opsional)</label><select id="checkinPayment"><option value="">Tanpa pembayaran</option></select></div>
+          <div class="field owner-block" id="overrideBlock"><label for="overrideReason">Override reason — Owner saja</label><input id="overrideReason" placeholder="Alasan override interval/transaksi"></div>
+          <button class="btn primary full" id="checkinSubmit" type="button">Check-in Member</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="slotsPanel">
+      <div class="owner-block" id="slotOwnerBlock">
+        <div class="grid">
+          <article class="card">
+            <div class="section-head"><div><div class="eyebrow">Owner/Admin</div><h2>Buka Slot Booking</h2></div></div>
+            <div class="message" id="slotMessage"></div>
+            <form id="slotForm">
+              <div class="field"><label for="slotService">Layanan</label><select id="slotService" required></select></div>
+              <div class="inline"><div class="field"><label for="slotStart">Tanggal & jam WIB</label><input id="slotStart" type="datetime-local" required></div><div class="field"><label for="slotCapacity">Kapasitas</label><input id="slotCapacity" type="number" min="1" max="50" required value="1"></div></div>
+              <label class="check"><input id="slotPriority" type="checkbox"><span>Priority-only sebelum waktu public release.</span></label>
+              <div class="field" id="releaseField" style="display:none"><label for="slotRelease">Public release WIB</label><input id="slotRelease" type="datetime-local"></div>
+              <div class="field"><label for="slotNotes">Catatan</label><input id="slotNotes" placeholder="Opsional"></div>
+              <button class="btn primary full" id="slotSubmit" type="submit">Buka Slot</button>
+            </form>
+          </article>
+          <article class="card"><div class="section-head"><div><div class="eyebrow">Schedule</div><h2>Slot Mendatang</h2></div><button class="btn secondary tiny" id="refreshSlots" type="button">Refresh</button></div><div id="slotList" class="loading">Memuat slot...</div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="accountPanel">
+      <div class="grid">
+        <article class="card"><div class="eyebrow">Staff Account</div><h2 id="accountName" style="margin:7px 0 4px">-</h2><p class="muted" id="accountEmail">-</p><div style="margin-top:13px"><span class="role-badge" id="accountRole">-</span></div></article>
+        <article class="card"><div class="eyebrow">Session</div><h2 style="margin:7px 0 12px">Akses Internal</h2><button class="btn danger full" id="logoutButton" type="button">Keluar dari Dashboard</button></article>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    import { Html5Qrcode } from "https://esm.sh/html5-qrcode@2.3.8";
+
+    const supabase=createClient("https://lscwmlxsvmakhnzknvrr.supabase.co","sb_publishable_xP2C7pPrFpjzbo4WS-C2sw_pYi5hHph");
+    let session=null,staff=null,bookings=[],payments=[],services=[],slots=[],memberMap=new Map(),serviceMap=new Map(),slotMap=new Map(),lookupMember=null,scanner=null,scannerRunning=false;
+    const rupiah=n=>"Rp"+Number(n||0).toLocaleString("id-ID");
+    const dt=v=>v?new Intl.DateTimeFormat("id-ID",{timeZone:"Asia/Jakarta",day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(v)):"-";
+    const statusLabel={awaiting_payment:"Menunggu Pembayaran",confirmed:"Terkonfirmasi",late:"Terlambat",no_show:"No Show",in_treatment:"Treatment",completed:"Selesai",cancelled:"Dibatalkan",waiting_verification:"Menunggu Verifikasi",paid:"Lunas",failed:"Ditolak"};
+
+    const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+    function message(id,text,type="error"){const e=document.getElementById(id);e.textContent=text;e.className="message show "+type}
+    function clearMessage(id){const e=document.getElementById(id);e.textContent="";e.className="message"}
+    function toast(text){const e=document.getElementById("toast");e.textContent=text;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2400)}
+    function busy(btn,on,busyText,normal){btn.disabled=on;btn.textContent=on?busyText:normal}
+    function authError(code){return({STAFF_NOT_ALLOWED:"Email ini tidak memiliki akses staff.",WEAK_PASSWORD:"Password minimal 8 karakter dan mengandung huruf serta angka.",ACCOUNT_EXISTS:"Akun staff sudah aktif. Gunakan menu Login.",INVALID_CREDENTIALS:"Email atau password salah.",STAFF_PROFILE_INACTIVE:"Akses staff tidak aktif.",ACTIVATION_FAILED:"Aktivasi belum berhasil.",RESET_REQUEST_FAILED:"Link reset belum dapat dikirim."})[code]||"Permintaan belum berhasil."}
+    function rpcCode(error){const m=(error?.message||"").toUpperCase();const list=["OWNER_ADMIN_REQUIRED","INVALID_CAPACITY","INVALID_SLOT_STATUS","SERVICE_DURATION_REQUIRED","STAFF_REQUIRED","MEMBER_NOT_FOUND","MEMBER_SUSPENDED","CHECKIN_MINIMUM_INTERVAL","CHECKIN_TRANSACTION_REQUIRED","BOOKING_MEMBER_MISMATCH","PAYMENT_MEMBER_MISMATCH","CHECKIN_TRANSACTION_ALREADY_USED","INVALID_MEMBER_QR","INVALID_STATUS_TRANSITION","PREMIUM_LATE_TOLERANCE_ACTIVE","TOO_EARLY_FOR_NO_SHOW","STATUS_NOT_MANAGED_HERE","PAYMENT_NOT_FOUND","NOT_MANUAL_PAYMENT","PAYMENT_NOT_VERIFIABLE"];return list.find(x=>m.includes(x))||"REQUEST_FAILED"}
+    function rpcText(c){return({OWNER_ADMIN_REQUIRED:"Fitur ini hanya untuk Owner/Admin.",INVALID_CAPACITY:"Kapasitas slot tidak valid.",SERVICE_DURATION_REQUIRED:"Layanan ini tidak memiliki durasi slot dan tidak bisa dibuka sebagai slot otomatis.",STAFF_REQUIRED:"Akses staff diperlukan.",MEMBER_NOT_FOUND:"Member tidak ditemukan.",MEMBER_SUSPENDED:"Akun member sedang ditangguhkan.",CHECKIN_MINIMUM_INTERVAL:"Check-in terakhir masih kurang dari 60 menit. Owner dapat memakai override reason.",CHECKIN_TRANSACTION_REQUIRED:"Check-in berikutnya memerlukan booking/pembayaran terkait. Owner dapat memakai override.",BOOKING_MEMBER_MISMATCH:"Booking tidak dimiliki member ini.",PAYMENT_MEMBER_MISMATCH:"Pembayaran tidak dimiliki member ini.",CHECKIN_TRANSACTION_ALREADY_USED:"Transaksi ini sudah pernah dipakai untuk check-in.",INVALID_MEMBER_QR:"Format QR member tidak valid.",INVALID_STATUS_TRANSITION:"Perubahan status tidak diperbolehkan dari kondisi sekarang.",PREMIUM_LATE_TOLERANCE_ACTIVE:"Toleransi keterlambatan Premium Wash masih aktif.",TOO_EARLY_FOR_NO_SHOW:"Belum waktunya menandai No Show.",PAYMENT_NOT_VERIFIABLE:"Pembayaran ini sudah tidak dapat diverifikasi.",REQUEST_FAILED:"Permintaan belum berhasil."})[c]||"Permintaan belum berhasil."}
+
+    async function callStaffAuth(payload){
+      const r=await supabase.functions.invoke("staff-auth",{body:payload});
+      if(r.error){let code="REQUEST_FAILED";try{if(r.error.context){const b=await r.error.context.json();code=b.error||code}}catch{}throw new Error(code)}
+      if(r.data?.error)throw new Error(r.data.error);return r.data
+    }
+    async function useSession(s){const {data,error}=await supabase.auth.setSession({access_token:s.access_token,refresh_token:s.refresh_token});if(error)throw error;session=data.session;await enterStaff()}
+    function setAuthView(name){document.querySelectorAll(".auth-view").forEach(e=>e.classList.toggle("active",e.id===name+"View"));document.querySelectorAll(".auth-tab").forEach(e=>e.classList.toggle("active",e.dataset.auth===name));clearMessage("authMessage")}
+    async function enterStaff(){
+      const {data,error}=await supabase.from("staff_profiles").select("user_id,display_name,email,role,active").eq("user_id",session.user.id).maybeSingle();
+      if(error||!data?.active){await supabase.auth.signOut();session=null;message("authMessage","Akun ini bukan akun staff Starpoint.");return}
+      staff=data;document.getElementById("authPage").style.display="none";document.getElementById("staffPage").classList.add("active");
+      const label=data.role==="owner_admin"?"Owner/Admin":"Teknisi";document.getElementById("topRole").textContent=label;document.getElementById("staffGreeting").textContent="Halo, "+data.display_name+".";document.getElementById("accountName").textContent=data.display_name;document.getElementById("accountEmail").textContent=data.email;document.getElementById("accountRole").textContent=label;
+      const owner=data.role==="owner_admin";document.querySelectorAll(".owner-only").forEach(e=>e.classList.toggle("show",owner));document.querySelectorAll(".owner-block").forEach(e=>e.classList.toggle("show",owner));document.getElementById("slotOwnerBlock").classList.toggle("show",owner);
+      await Promise.all([loadSummary(),loadBookings(),loadPayments(),loadServices()]);if(owner)await loadSlots();
+    }
+    function setPanel(name){document.querySelectorAll(".tab").forEach(e=>e.classList.toggle("active",e.dataset.panel===name));document.querySelectorAll(".panel").forEach(e=>e.classList.toggle("active",e.id===name+"Panel"));if(name==="bookings")loadBookings();if(name==="payments")loadPayments();if(name==="slots"&&staff?.role==="owner_admin")loadSlots();window.scrollTo({top:0,behavior:"smooth"})}
+
+    async function loadSummary(){
+      const {data,error}=await supabase.rpc("staff_dashboard_summary");if(error)return;
+      document.getElementById("sumBookings").textContent=data.bookings_today||0;document.getElementById("sumPayments").textContent=data.waiting_verification||0;document.getElementById("sumTreatment").textContent=data.in_treatment||0;document.getElementById("sumRevenue").textContent=rupiah(data.revenue_today||0)
+    }
+    async function loadServices(){
+      const {data}=await supabase.from("services").select("id,code,name_id,duration_minutes,duration_label,capacity_default").eq("active",true).order("sort_order");services=data||[];serviceMap=new Map(services.map(x=>[x.id,x]));
+      const eligible=services.filter(s=>Number(s.duration_minutes)>0);const sel=document.getElementById("slotService");sel.innerHTML=eligible.map(s=>'<option value="'+s.id+'">'+esc(s.name_id)+" · "+esc(s.duration_label||"")+"</option>").join("");if(eligible[0])document.getElementById("slotCapacity").value=eligible[0].capacity_default||1
+    }
+    async function enrichBookings(rows){
+      const mids=[...new Set(rows.map(x=>x.member_id).filter(Boolean))],sids=[...new Set(rows.map(x=>x.service_id).filter(Boolean))],slids=[...new Set(rows.map(x=>x.slot_id).filter(Boolean))];
+      const [m,s,sl]=await Promise.all([
+        mids.length?supabase.from("member_profiles").select("user_id,full_name,member_code,username").in("user_id",mids):Promise.resolve({data:[]}),
+        sids.length?supabase.from("services").select("id,name_id,code").in("id",sids):Promise.resolve({data:[]}),
+        slids.length?supabase.from("booking_slots").select("id,starts_at,ends_at,capacity,status,priority_only,public_release_at,service_id,notes").in("id",slids):Promise.resolve({data:[]})
+      ]);
+      (m.data||[]).forEach(x=>memberMap.set(x.user_id,x));(s.data||[]).forEach(x=>serviceMap.set(x.id,x));(sl.data||[]).forEach(x=>slotMap.set(x.id,x));return rows
+    }
+    async function loadBookings(){
+      const t=document.getElementById("bookingList");t.className="loading";t.textContent="Memuat booking...";
+      const {data,error}=await supabase.from("bookings").select("id,booking_code,member_id,service_id,slot_id,vehicle_type,vehicle_category,status,quoted_total,deposit_required,notes,created_at,reschedule_count").order("created_at",{ascending:false}).limit(150);
+      if(error){t.className="empty";t.textContent="Booking belum dapat dimuat.";return}bookings=await enrichBookings(data||[]);renderBookings();renderToday()
+    }
+    function localDateKey(v){return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jakarta",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(v))}
+    function todayKey(){return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jakarta",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
+    function renderToday(){
+      const rows=bookings.filter(b=>slotMap.get(b.slot_id)?.starts_at&&localDateKey(slotMap.get(b.slot_id).starts_at)===todayKey()&&b.status!=="cancelled");const t=document.getElementById("todayBookings");if(!rows.length){t.className="empty";t.textContent="Tidak ada booking hari ini.";return}t.className="list";t.innerHTML=rows.slice(0,6).map(b=>bookingHtml(b,false)).join("")
+    }
+    function bookingHtml(b,actions=true){
+      const m=memberMap.get(b.member_id)||{},s=serviceMap.get(b.service_id)||{},sl=slotMap.get(b.slot_id)||{};return '<div class="item"><div class="item-head"><div><h3>'+esc(b.booking_code||"-")+' · '+esc(s.name_id||"Layanan")+'</h3><div class="sub">'+esc(m.full_name||"Member")+' · '+esc(m.member_code||"-")+'</div></div><span class="status '+b.status+'">'+esc(statusLabel[b.status]||b.status)+'</span></div><div class="facts"><div class="fact"><span>Jadwal</span><b>'+esc(dt(sl.starts_at))+'</b></div><div class="fact"><span>Kendaraan</span><b>'+esc(b.vehicle_type||"-")+'</b></div><div class="fact"><span>Total</span><b>'+esc(rupiah(b.quoted_total))+'</b></div></div>'+(actions?'<div class="actions">'+statusButtons(b)+'</div>':'')+'</div>'
+    }
+    function statusButtons(b){
+      const map={awaiting_payment:[["confirmed","Konfirmasi","secondary"],["cancelled","Batalkan","danger"]],confirmed:[["in_treatment","Mulai Treatment","primary"],["late","Tandai Terlambat","warn"],["no_show","No Show","danger"],["cancelled","Batalkan","danger"]],late:[["in_treatment","Mulai Treatment","primary"],["no_show","No Show","danger"],["cancelled","Batalkan","danger"]],in_treatment:[["completed","Selesai","primary"]]};
+      return (map[b.status]||[]).map(x=>'<button class="btn '+x[2]+' tiny statusBtn" data-id="'+b.id+'" data-status="'+x[0]+'" type="button">'+x[1]+'</button>').join("")
+    }
+    function renderBookings(){
+      const filter=document.getElementById("bookingFilter").value,q=document.getElementById("bookingSearch").value.trim().toLowerCase();let rows=bookings;
+      if(filter)rows=rows.filter(b=>b.status===filter);if(q)rows=rows.filter(b=>{const m=memberMap.get(b.member_id)||{},s=serviceMap.get(b.service_id)||{};return [b.booking_code,b.vehicle_type,m.full_name,m.member_code,m.username,s.name_id].some(v=>String(v||"").toLowerCase().includes(q))});
+      const t=document.getElementById("bookingList");if(!rows.length){t.className="empty";t.textContent="Tidak ada booking yang cocok.";return}t.className="list";t.innerHTML=rows.map(b=>bookingHtml(b,true)).join("");document.querySelectorAll(".statusBtn").forEach(x=>x.addEventListener("click",()=>updateBookingStatus(x.dataset.id,x.dataset.status)))
+    }
+    async function updateBookingStatus(id,status){
+      if(["cancelled","no_show"].includes(status)&&!confirm("Lanjutkan perubahan status ke "+(statusLabel[status]||status)+"?"))return;
+      const {error}=await supabase.rpc("staff_update_booking_status",{p_booking_id:id,p_status:status});if(error){message("pageMessage",rpcText(rpcCode(error)));return}toast("Status booking diperbarui.");await Promise.all([loadBookings(),loadSummary(),loadPayments()])
+    }
+
+    async function loadPayments(){
+      const t=document.getElementById("paymentList");t.className="loading";t.textContent="Memuat pembayaran...";
+      const {data,error}=await supabase.from("payments").select("id,payment_code,booking_id,member_id,kind,method,status,amount,proof_path,notes,created_at").eq("status","waiting_verification").order("created_at",{ascending:true});
+      if(error){t.className="empty";t.textContent="Pembayaran belum dapat dimuat.";return}payments=data||[];
+      const mids=[...new Set(payments.map(x=>x.member_id))];if(mids.length){const {data:ms}=await supabase.from("member_profiles").select("user_id,full_name,member_code").in("user_id",mids);(ms||[]).forEach(x=>memberMap.set(x.user_id,x))}
+      renderPayments();document.getElementById("sumPayments").textContent=payments.length;const o=document.getElementById("overviewPayments");if(!payments.length){o.className="empty";o.textContent="Tidak ada pembayaran menunggu.";return}o.className="list";o.innerHTML=payments.slice(0,4).map(p=>paymentHtml(p,false)).join("")
+    }
+    function paymentHtml(p,actions=true){
+      const m=memberMap.get(p.member_id)||{};return '<div class="item"><div class="item-head"><div><h3>'+esc(p.payment_code||"Pembayaran")+' · '+esc(m.full_name||"Member")+'</h3><div class="sub">'+esc(m.member_code||"-")+' · '+esc(String(p.method||"").replaceAll("_"," "))+'</div></div><span class="status '+p.status+'">'+esc(statusLabel[p.status]||p.status)+'</span></div><div class="facts"><div class="fact"><span>Nominal</span><b>'+esc(rupiah(p.amount))+'</b></div><div class="fact"><span>Jenis</span><b>'+esc(p.kind||"-")+'</b></div><div class="fact"><span>Dikirim</span><b>'+esc(dt(p.created_at))+'</b></div></div>'+(actions?'<div class="actions">'+(p.proof_path?'<button class="btn secondary tiny proofBtn" data-id="'+p.id+'" type="button">Lihat Bukti</button>':'')+'<button class="btn primary tiny approveBtn" data-id="'+p.id+'" type="button">Setujui</button><button class="btn danger tiny rejectBtn" data-id="'+p.id+'" type="button">Tolak</button></div><div class="proof-wrap" id="proof-'+p.id+'"></div>':'')+'</div>'
+    }
+    function renderPayments(){
+      const t=document.getElementById("paymentList");if(!payments.length){t.className="empty";t.textContent="Tidak ada pembayaran menunggu verifikasi.";return}t.className="list";t.innerHTML=payments.map(p=>paymentHtml(p,true)).join("");
+      document.querySelectorAll(".proofBtn").forEach(b=>b.addEventListener("click",()=>showProof(b.dataset.id)));document.querySelectorAll(".approveBtn").forEach(b=>b.addEventListener("click",()=>verifyPayment(b.dataset.id,true)));document.querySelectorAll(".rejectBtn").forEach(b=>b.addEventListener("click",()=>verifyPayment(b.dataset.id,false)))
+    }
+    async function showProof(id){
+      const p=payments.find(x=>x.id===id);if(!p?.proof_path)return;const box=document.getElementById("proof-"+id);if(box.classList.contains("show")){box.classList.remove("show");box.innerHTML="";return}
+      const {data,error}=await supabase.storage.from("payment-proofs").createSignedUrl(p.proof_path,300);if(error||!data?.signedUrl){message("pageMessage","Bukti pembayaran tidak dapat dibuka.");return}box.innerHTML='<img class="proof" alt="Bukti pembayaran" src="'+esc(data.signedUrl)+'">';box.classList.add("show")
+    }
+    async function verifyPayment(id,approved){
+      if(!confirm(approved?"Setujui pembayaran ini?":"Tolak pembayaran ini?"))return;const note=prompt(approved?"Catatan verifikasi (opsional):":"Alasan penolakan (opsional):","")||null;
+      const {error}=await supabase.rpc("staff_verify_manual_payment",{p_payment_id:id,p_approved:approved,p_notes:note});if(error){message("pageMessage",rpcText(rpcCode(error)));return}toast(approved?"Pembayaran disetujui.":"Pembayaran ditolak.");await Promise.all([loadPayments(),loadBookings(),loadSummary()])
+    }
+
+    async function lookupQr(value){
+      clearMessage("checkinMessage");const qr=String(value||document.getElementById("qrValue").value).trim();if(!qr)return message("checkinMessage","Masukkan atau scan QR member.");
+      const {data,error}=await supabase.rpc("staff_lookup_member_by_qr",{p_qr_value:qr});if(error){document.getElementById("memberResult").classList.remove("show");return message("checkinMessage",rpcText(rpcCode(error)))}lookupMember=data;document.getElementById("qrValue").value=qr;document.getElementById("memberResult").classList.add("show");document.getElementById("lookupName").textContent=data.full_name||"-";document.getElementById("lookupMeta").textContent="@"+(data.username||"-")+" · "+String(data.status||"-").toUpperCase();document.getElementById("lookupLevel").textContent=String(data.level||"classic").toUpperCase();document.getElementById("lookupPoints").textContent=Number(data.reward_points||0).toLocaleString("id-ID");document.getElementById("lookupLast").textContent=dt(data.last_checkin_at);
+      const [b,p]=await Promise.all([supabase.from("bookings").select("id,booking_code,status,slot_id").eq("member_id",data.user_id).in("status",["awaiting_payment","confirmed","late","in_treatment"]).order("created_at",{ascending:false}).limit(10),supabase.from("payments").select("id,payment_code,status,amount").eq("member_id",data.user_id).in("status",["paid","waiting_verification"]).order("created_at",{ascending:false}).limit(10)]);
+      document.getElementById("checkinBooking").innerHTML='<option value="">Tanpa booking</option>'+(b.data||[]).map(x=>'<option value="'+x.id+'">'+esc(x.booking_code+" · "+(statusLabel[x.status]||x.status))+'</option>').join("");document.getElementById("checkinPayment").innerHTML='<option value="">Tanpa pembayaran</option>'+(p.data||[]).map(x=>'<option value="'+x.id+'">'+esc(x.payment_code+" · "+rupiah(x.amount)+" · "+(statusLabel[x.status]||x.status))+'</option>').join("")
+    }
+    async function startCamera(){
+      clearMessage("checkinMessage");try{if(!scanner)scanner=new Html5Qrcode("reader");await scanner.start({facingMode:"environment"},{fps:10,qrbox:{width:220,height:220}},async decoded=>{document.getElementById("qrValue").value=decoded;await stopCamera();await lookupQr(decoded)},()=>{});scannerRunning=true;document.getElementById("startCamera").disabled=true;document.getElementById("stopCamera").disabled=false}catch(e){message("checkinMessage","Kamera tidak dapat dibuka. Izinkan akses kamera atau masukkan QR secara manual.")}
+    }
+    async function stopCamera(){if(scanner&&scannerRunning){try{await scanner.stop()}catch{}scannerRunning=false}document.getElementById("startCamera").disabled=false;document.getElementById("stopCamera").disabled=true}
+    async function createCheckin(){
+      if(!lookupMember)return message("checkinMessage","Cari member terlebih dahulu.");const {data,error}=await supabase.rpc("staff_create_checkin",{p_qr_value:document.getElementById("qrValue").value.trim(),p_booking_id:document.getElementById("checkinBooking").value||null,p_payment_id:document.getElementById("checkinPayment").value||null,p_override_reason:staff.role==="owner_admin"?(document.getElementById("overrideReason").value.trim()||null):null});
+      if(error)return message("checkinMessage",rpcText(rpcCode(error)));message("checkinMessage","Check-in berhasil untuk "+(data.full_name||"member")+(data.activated_now?" — member sekarang aktif.":""),"ok");toast("Check-in tercatat.");await lookupQr(document.getElementById("qrValue").value)
+    }
+
+    function wibIso(v){return v?(/T\d{2}:\d{2}$/.test(v)?v+":00+07:00":v):null}
+    async function loadSlots(){
+      if(staff?.role!=="owner_admin")return;const {data,error}=await supabase.from("booking_slots").select("id,service_id,starts_at,ends_at,capacity,status,priority_only,public_release_at,notes").gte("starts_at",new Date(Date.now()-86400000).toISOString()).order("starts_at",{ascending:true}).limit(100);if(error)return;slots=data||[];renderSlots()
+    }
+    function renderSlots(){
+      const t=document.getElementById("slotList");if(!slots.length){t.className="empty";t.textContent="Belum ada slot. Buat slot pertama dari form.";return}t.className="slot-list";t.innerHTML=slots.map(s=>{const sv=serviceMap.get(s.service_id)||{};return '<div class="slot"><div class="slot-top"><div><b>'+esc(sv.name_id||"Layanan")+'</b><p>'+esc(dt(s.starts_at))+' · kapasitas '+s.capacity+(s.priority_only?" · PRIORITY":"")+'</p></div><span class="status '+(s.status==="open"?"confirmed":"cancelled")+'">'+esc(s.status)+'</span></div><div class="actions"><button class="btn '+(s.status==="open"?"danger":"primary")+' tiny slotToggle" data-id="'+s.id+'" type="button">'+(s.status==="open"?"Tutup Slot":"Buka Slot")+'</button></div></div>'}).join("");document.querySelectorAll(".slotToggle").forEach(b=>b.addEventListener("click",()=>toggleSlot(b.dataset.id)))
+    }
+    async function saveSlot(params){const {data,error}=await supabase.rpc("owner_save_booking_slot",params);if(error)throw error;return data}
+    async function toggleSlot(id){
+      const s=slots.find(x=>x.id===id);if(!s)return;try{await saveSlot({p_slot_id:s.id,p_service_id:s.service_id,p_starts_at:s.starts_at,p_capacity:s.capacity,p_priority_only:s.priority_only,p_public_release_at:s.public_release_at,p_status:s.status==="open"?"closed":"open",p_notes:s.notes});toast("Status slot diperbarui.");await loadSlots()}catch(e){message("slotMessage",rpcText(rpcCode(e)))}
+    }
+
+    document.querySelectorAll(".auth-tab").forEach(b=>b.addEventListener("click",()=>setAuthView(b.dataset.auth)));
+    document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setPanel(b.dataset.panel)));
+    document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>setPanel(b.dataset.go)));
+    document.getElementById("bookingFilter").addEventListener("change",renderBookings);document.getElementById("bookingSearch").addEventListener("input",renderBookings);document.getElementById("refreshBookings").addEventListener("click",loadBookings);document.getElementById("refreshPayments").addEventListener("click",loadPayments);document.getElementById("refreshSlots").addEventListener("click",loadSlots);
+    document.getElementById("lookupButton").addEventListener("click",()=>lookupQr());document.getElementById("checkinSubmit").addEventListener("click",createCheckin);document.getElementById("startCamera").addEventListener("click",startCamera);document.getElementById("stopCamera").addEventListener("click",stopCamera);
+    document.getElementById("slotPriority").addEventListener("change",e=>document.getElementById("releaseField").style.display=e.target.checked?"block":"none");document.getElementById("slotService").addEventListener("change",()=>{const s=services.find(x=>x.id===document.getElementById("slotService").value);if(s)document.getElementById("slotCapacity").value=s.capacity_default||1});
+    document.getElementById("loginForm").addEventListener("submit",async e=>{e.preventDefault();clearMessage("authMessage");const b=document.getElementById("loginSubmit");busy(b,true,"Memproses...","Login Staff");try{const d=await callStaffAuth({action:"login",email:document.getElementById("loginEmail").value.trim().toLowerCase(),password:document.getElementById("loginPassword").value});await useSession(d.session)}catch(err){message("authMessage",authError(err.message))}finally{busy(b,false,"Memproses...","Login Staff")}});
+    document.getElementById("activateForm").addEventListener("submit",async e=>{e.preventDefault();clearMessage("authMessage");const b=document.getElementById("activateSubmit");busy(b,true,"Mengaktifkan...","Aktifkan Akun Staff");try{const d=await callStaffAuth({action:"activate",email:document.getElementById("activateEmail").value.trim().toLowerCase(),password:document.getElementById("activatePassword").value});await useSession(d.session)}catch(err){message("authMessage",authError(err.message))}finally{busy(b,false,"Mengaktifkan...","Aktifkan Akun Staff")}});
+    document.getElementById("forgotButton").addEventListener("click",async()=>{const email=document.getElementById("loginEmail").value.trim().toLowerCase();if(!email)return message("authMessage","Isi email staff terlebih dahulu.");try{const d=await callStaffAuth({action:"forgot_password",email});message("authMessage",d.message||"Jika akun terdaftar, link reset akan dikirim.","ok")}catch(e){message("authMessage",authError(e.message))}});
+    document.getElementById("slotForm").addEventListener("submit",async e=>{e.preventDefault();clearMessage("slotMessage");const b=document.getElementById("slotSubmit");busy(b,true,"Menyimpan...","Buka Slot");try{const priority=document.getElementById("slotPriority").checked,release=document.getElementById("slotRelease").value;if(priority&&!release)throw new Error("RELEASE_REQUIRED");await saveSlot({p_slot_id:null,p_service_id:document.getElementById("slotService").value,p_starts_at:wibIso(document.getElementById("slotStart").value),p_capacity:Number(document.getElementById("slotCapacity").value),p_priority_only:priority,p_public_release_at:priority?wibIso(release):null,p_status:"open",p_notes:document.getElementById("slotNotes").value.trim()||null});e.target.reset();document.getElementById("releaseField").style.display="none";toast("Slot booking dibuka.");await loadSlots()}catch(err){message("slotMessage",err.message==="RELEASE_REQUIRED"?"Isi waktu public release untuk priority slot.":rpcText(rpcCode(err)))}finally{busy(b,false,"Menyimpan...","Buka Slot")}});
+    document.getElementById("logoutButton").addEventListener("click",async()=>{await stopCamera();await supabase.auth.signOut();location.reload()});
+
+    const {data:init}=await supabase.auth.getSession();session=init.session;
+    if(session)await enterStaff();
+    const params=new URLSearchParams(location.search);if(params.get("reset")==="success"){message("authMessage","Password berhasil diubah. Silakan login.","ok");history.replaceState({},"",location.pathname)}
+  </script>
+</body>
+</html>
