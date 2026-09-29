@@ -330,7 +330,7 @@
       const cat=document.getElementById("vehicleCategory").value;
       const price=servicePrice(service,cat);
       document.getElementById("pricePreview").textContent=price===null?"Konsultasi":rupiah(price);
-      document.getElementById("depositPreview").textContent=service?(service.requires_deposit?rupiah(Math.min(Number(service.minimum_deposit||0),Number(price??service.minimum_deposit||0))):"Tanpa DP"):"-";
+      document.getElementById("depositPreview").textContent=service?(service.requires_deposit?rupiah(Math.min(Number(service.minimum_deposit||0),Number(price ?? service.minimum_deposit ?? 0))):"Tanpa DP"):"-";
       document.getElementById("durationPreview").textContent=service?.duration_label||"-";
       await loadSlots(service?.id);
     }
