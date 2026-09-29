@@ -142,7 +142,8 @@ public class MainActivity extends Activity {
             birth = NativeUi.input(this, "Tanggal lahir");
             birth.setFocusable(false);
             birth.setClickable(true);
-            birth.setOnClickListener(v -> showBirthDatePicker(birth));
+            final EditText birthField = birth;
+            birthField.setOnClickListener(v -> showBirthDatePicker(birthField));
             phone = NativeUi.input(this, "No. WhatsApp (opsional)");
             phone.setInputType(InputType.TYPE_CLASS_PHONE);
             referral = NativeUi.input(this, "Kode referral (opsional)");
