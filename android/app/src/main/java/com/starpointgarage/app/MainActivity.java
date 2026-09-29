@@ -1,9 +1,11 @@
 package com.starpointgarage.app;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +14,8 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -134,14 +138,24 @@ public class MainActivity extends Activity {
         if ("register".equals(action)) {
             fullName = NativeUi.input(this, "Nama lengkap");
             email = NativeUi.input(this, "Email");
-            birth = NativeUi.input(this, "Tanggal lahir (YYYY-MM-DD)");
+            email.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            birth = NativeUi.input(this, "Tanggal lahir");
+            birth.setFocusable(false);
+            birth.setClickable(true);
+            birth.setOnClickListener(v -> showBirthDatePicker(birth));
             phone = NativeUi.input(this, "No. WhatsApp (opsional)");
+            phone.setInputType(InputType.TYPE_CLASS_PHONE);
             referral = NativeUi.input(this, "Kode referral (opsional)");
             form.addView(fullName, NativeUi.match(this)); NativeUi.gap(this,form,8);
         }
 
         EditText username = NativeUi.input(this, "Username");
-        form.addView(username, NativeUi.match(this)); NativeUi.gap(this,form,8);
+        username.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        form.addView(username, NativeUi.match(this));
+        if ("register".equals(action)) {
+            form.addView(NativeUi.muted(this, "4–20 karakter: huruf, angka, titik, atau underscore.", 11));
+        }
+        NativeUi.gap(this,form,8);
 
         if ("register".equals(action)) {
             form.addView(email, NativeUi.match(this)); NativeUi.gap(this,form,8);
@@ -149,9 +163,13 @@ public class MainActivity extends Activity {
 
         EditText password = NativeUi.password(this, "Password");
         form.addView(password, NativeUi.match(this));
+        if ("register".equals(action)) {
+            form.addView(NativeUi.muted(this, "Minimal 8 karakter dan wajib berisi huruf + angka.", 11));
+        }
 
         if ("register".equals(action)) {
             NativeUi.gap(this,form,8); form.addView(birth, NativeUi.match(this));
+            form.addView(NativeUi.muted(this, "Ketuk untuk memilih tanggal lahir.", 11));
             NativeUi.gap(this,form,8); form.addView(phone, NativeUi.match(this));
             NativeUi.gap(this,form,8); form.addView(referral, NativeUi.match(this));
         }
@@ -162,18 +180,65 @@ public class MainActivity extends Activity {
 
         EditText fFullName = fullName, fEmail = email, fBirth = birth, fPhone = phone, fReferral = referral;
         submit.setOnClickListener(v -> {
+            String usernameValue = username.getText().toString().trim().toLowerCase(Locale.ROOT);
+            String passwordValue = password.getText().toString();
+
+            if ("register".equals(action)) {
+                String validation = validateMemberRegistration(
+                        fFullName.getText().toString().trim(),
+                        usernameValue,
+                        fEmail.getText().toString().trim(),
+                        passwordValue,
+                        fBirth.getText().toString().trim()
+                );
+                if (validation != null) {
+                    status.setText(validation);
+                    return;
+                }
+            }
+
             JSONObjectBuilder b = new JSONObjectBuilder().put("action",action).put("businessCode","starpoint_garage")
-                    .put("username",username.getText().toString().trim())
-                    .put("password",password.getText().toString());
+                    .put("username",usernameValue)
+                    .put("password",passwordValue);
             if ("register".equals(action)) {
                 b.put("fullName",fFullName.getText().toString().trim())
-                        .put("email",fEmail.getText().toString().trim())
+                        .put("email",fEmail.getText().toString().trim().toLowerCase(Locale.ROOT))
                         .put("birthDate",fBirth.getText().toString().trim())
                         .put("phone",fPhone.getText().toString().trim())
                         .put("referralCode",fReferral.getText().toString().trim());
             }
             authMember(submit, b.build());
         });
+    }
+
+    private String validateMemberRegistration(String fullName, String username, String email, String password, String birthDate) {
+        if (fullName.isEmpty()) return "Nama lengkap wajib diisi.";
+        if (!username.matches("^[a-z0-9._]{4,20}$")) {
+            return "Username harus 4–20 karakter dan hanya boleh huruf, angka, titik, atau underscore.";
+        }
+        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return "Format email tidak valid.";
+        }
+        if (password.length() < 8 || !password.matches(".*[A-Za-z].*") || !password.matches(".*\\d.*")) {
+            return "Password minimal 8 karakter dan harus berisi huruf + angka.";
+        }
+        if (!birthDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+            return "Pilih tanggal lahir terlebih dahulu.";
+        }
+        return null;
+    }
+
+    private void showBirthDatePicker(EditText target) {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR) - 20;
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dialog = new DatePickerDialog(this, (view, y, m, d) -> {
+            target.setText(String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d));
+        }, year, month, day);
+        dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        dialog.show();
     }
 
     private void renderStaffForm(LinearLayout form) {

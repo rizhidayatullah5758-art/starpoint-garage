@@ -133,6 +133,14 @@ public final class NativeUi {
         if (code == null) return "Terjadi kesalahan.";
         switch (code) {
             case "INVALID_CREDENTIALS": return "Username/email atau password salah.";
+            case "FULL_NAME_REQUIRED": return "Nama lengkap wajib diisi.";
+            case "INVALID_USERNAME": return "Username harus 4–20 karakter: huruf, angka, titik, atau underscore.";
+            case "INVALID_EMAIL": return "Format email tidak valid.";
+            case "INVALID_BIRTH_DATE": return "Tanggal lahir wajib dipilih.";
+            case "REGISTER_FAILED": return "Pendaftaran gagal dibuat. Coba lagi.";
+            case "REFERRAL_CODE_NOT_FOUND": return "Kode referral tidak ditemukan.";
+            case "TOO_MANY_REQUESTS": return "Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.";
+            case "SERVER_BUSY": return "Server sedang sibuk. Coba lagi sebentar.";
             case "ACCOUNT_SUSPENDED": return "Akun sedang disuspend.";
             case "WEAK_PASSWORD": return "Password minimal 8 karakter, berisi huruf dan angka.";
             case "USERNAME_TAKEN": return "Username sudah dipakai.";
