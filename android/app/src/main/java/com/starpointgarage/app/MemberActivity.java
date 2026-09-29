@@ -279,7 +279,7 @@ public class MemberActivity extends Activity {
                     slotRows.add(s); names.add(formatTime(s.optString("starts_at"))+" · sisa "+s.optInt("available_capacity"));
                 }
                 runOnUiThread(()->{
-                    slots.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,names.isEmpty()?new String[]{"Slot tidak tersedia"}:names));
+                    java.util.List<String> slotLabels = names.isEmpty() ? java.util.Collections.singletonList("Slot tidak tersedia") : names; slots.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,slotLabels));
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(!slotRows.isEmpty());
                 });
             }catch(Exception e){runOnUiThread(()->NativeUi.toast(this,NativeUi.errorText(e.getMessage())));}
