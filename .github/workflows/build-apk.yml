@@ -31,16 +31,16 @@ jobs:
         with:
           gradle-version: "8.9"
 
-      - name: Build installable APK
+      - name: Build native installable APK
         run: gradle -p android :app:assembleDebug --stacktrace
 
       - name: Prepare APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk StarpointGarage-v1.0.0.apk
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk StarpointGarage-Native-v2.0.0.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: StarpointGarage-APK
-          path: StarpointGarage-v1.0.0.apk
+          name: StarpointGarage-Native-APK
+          path: StarpointGarage-Native-v2.0.0.apk
           if-no-files-found: error
           retention-days: 30
