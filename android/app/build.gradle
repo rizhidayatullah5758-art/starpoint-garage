@@ -10,8 +10,8 @@ android {
         applicationId "com.starpointgarage.internal"
         minSdk 24
         targetSdk 35
-        versionCode 7
-        versionName "3.0.1-internal"
+        versionCode 8
+        versionName "3.0.2-internal"
     }
 
     buildFeatures {
