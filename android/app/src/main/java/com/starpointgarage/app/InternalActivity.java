@@ -806,15 +806,83 @@ public class InternalActivity extends Activity {
     private void showOwnerServices(){
         clear("Layanan & Harga","home");addLoading("Memuat layanan…");
         io.execute(()->{
-            try{JSONArray services=get("services?select=id,name_id,active&order=sort_order.asc");JSONArray prices=get("service_prices?select=id,service_id,vehicle_category,amount,price_label,active&order=created_at.asc");Map<String,String> names=new LinkedHashMap<>();for(int i=0;i<services.length();i++){JSONObject s=services.optJSONObject(i);if(s!=null)names.put(s.optString("id"),s.optString("name_id"));}
-                runOnUiThread(()->{content.removeAllViews();content.addView(NativeUi.section(this,"Layanan & Harga"));NativeUi.gap(this,content,12);for(int i=0;i<prices.length();i++){JSONObject p=prices.optJSONObject(i);if(p==null)continue;LinearLayout c=NativeUi.card(this);c.addView(NativeUi.text(this,names.getOrDefault(p.optString("service_id"),"Layanan"),15,true));String cat=p.isNull("vehicle_category")?"Umum":NativeUi.categoryLabel(p.optString("vehicle_category"));c.addView(NativeUi.muted(this,cat,11));c.addView(NativeUi.text(this,p.isNull("amount")?p.optString("price_label","Konsultasi"):NativeUi.rupiah(p.optInt("amount")),15,true));Button edit=NativeUi.button(this,"Ubah Harga",false);edit.setOnClickListener(v->ownerEditPrice(p,names.getOrDefault(p.optString("service_id"),"Layanan")));NativeUi.gap(this,c,8);c.addView(edit,NativeUi.match(this));NativeUi.margin(this,c,8);content.addView(c);}buildNav("home");});
+            try{
+                JSONArray services=get("services?select=id,name_id,active,booking_enabled,capacity_default,duration_minutes,requires_deposit,minimum_deposit&order=sort_order.asc");
+                JSONArray prices=get("service_prices?select=id,service_id,vehicle_category,amount,price_label,active&order=created_at.asc");
+                Map<String,String> names=new LinkedHashMap<>();
+                for(int i=0;i<services.length();i++){JSONObject s=services.optJSONObject(i);if(s!=null)names.put(s.optString("id"),s.optString("name_id"));}
+                runOnUiThread(()->{
+                    content.removeAllViews();content.addView(NativeUi.section(this,"Layanan & Harga"));NativeUi.gap(this,content,12);
+                    content.addView(NativeUi.text(this,"Konfigurasi Layanan",17,true));NativeUi.gap(this,content,8);
+                    for(int i=0;i<services.length();i++){
+                        JSONObject s=services.optJSONObject(i);if(s==null)continue;
+                        LinearLayout card=NativeUi.card(this);
+                        card.addView(NativeUi.text(this,s.optString("name_id","Layanan"),15,true));
+                        LinearLayout chips=new LinearLayout(this);chips.setGravity(Gravity.CENTER_VERTICAL);
+                        chips.addView(NativeUi.chip(this,s.optBoolean("active")?"AKTIF":"NONAKTIF",s.optBoolean("active")?NativeUi.GREEN:NativeUi.MUTED));
+                        NativeUi.gap(this,chips,7);
+                        chips.addView(NativeUi.chip(this,s.optBoolean("booking_enabled")?"BOOKING":"NO BOOKING",s.optBoolean("booking_enabled")?NativeUi.AMBER:NativeUi.MUTED));
+                        card.addView(chips);
+                        card.addView(NativeUi.muted(this,"Kapasitas "+s.optInt("capacity_default",1)+"  •  Durasi "+(s.isNull("duration_minutes")?"-":s.optInt("duration_minutes")+" mnt"),11));
+                        card.addView(NativeUi.muted(this,s.optBoolean("requires_deposit")?"DP "+NativeUi.rupiah(s.optInt("minimum_deposit")):"Tanpa DP",11));
+                        NativeUi.gap(this,card,8);
+                        Button cfg=NativeUi.button(this,"Atur Layanan",false);cfg.setOnClickListener(v->ownerServiceConfigDialog(s));card.addView(cfg,NativeUi.match(this));
+                        NativeUi.margin(this,card,8);content.addView(card);
+                    }
+                    NativeUi.gap(this,content,16);content.addView(NativeUi.text(this,"Harga",17,true));NativeUi.gap(this,content,8);
+                    for(int i=0;i<prices.length();i++){
+                        JSONObject p=prices.optJSONObject(i);if(p==null)continue;
+                        LinearLayout card=NativeUi.card(this);
+                        card.addView(NativeUi.text(this,names.getOrDefault(p.optString("service_id"),"Layanan"),15,true));
+                        String cat=p.isNull("vehicle_category")?"Umum":NativeUi.categoryLabel(p.optString("vehicle_category"));
+                        card.addView(NativeUi.muted(this,cat,11));
+                        card.addView(NativeUi.text(this,p.isNull("amount")?p.optString("price_label","Konsultasi"):NativeUi.rupiah(p.optInt("amount")),15,true));
+                        Button edit=NativeUi.button(this,"Ubah Harga",false);edit.setOnClickListener(v->ownerEditPrice(p,names.getOrDefault(p.optString("service_id"),"Layanan")));
+                        NativeUi.gap(this,card,8);card.addView(edit,NativeUi.match(this));NativeUi.margin(this,card,8);content.addView(card);
+                    }
+                    buildNav("home");
+                });
             }catch(Exception e){runOnUiThread(()->replaceLoadingWithError(e));}
         });
     }
 
+    private void ownerServiceConfigDialog(JSONObject s){
+        LinearLayout box=NativeUi.page(this);
+        Spinner active=NativeUi.spinner(this);active.setAdapter(adapter(new String[]{"Aktif","Nonaktif"}));active.setSelection(s.optBoolean("active",true)?0:1);
+        Spinner booking=NativeUi.spinner(this);booking.setAdapter(adapter(new String[]{"Booking Aktif","Booking Nonaktif"}));booking.setSelection(s.optBoolean("booking_enabled",true)?0:1);
+        EditText capacity=NativeUi.moneyInput(this,"Kapasitas");capacity.setText(String.valueOf(s.optInt("capacity_default",1)));
+        EditText duration=NativeUi.moneyInput(this,"Durasi menit");if(!s.isNull("duration_minutes"))duration.setText(String.valueOf(s.optInt("duration_minutes")));
+        Spinner deposit=NativeUi.spinner(this);deposit.setAdapter(adapter(new String[]{"Tanpa DP","Wajib DP"}));deposit.setSelection(s.optBoolean("requires_deposit")?1:0);
+        EditText minimum=NativeUi.moneyInput(this,"Minimum DP");minimum.setText(String.valueOf(s.optInt("minimum_deposit",0)));
+        box.addView(active,NativeUi.match(this));NativeUi.gap(this,box,8);box.addView(booking,NativeUi.match(this));NativeUi.gap(this,box,8);
+        box.addView(capacity,NativeUi.match(this));NativeUi.gap(this,box,8);box.addView(duration,NativeUi.match(this));NativeUi.gap(this,box,8);
+        box.addView(deposit,NativeUi.match(this));NativeUi.gap(this,box,8);box.addView(minimum,NativeUi.match(this));
+        new AlertDialog.Builder(this).setTitle(s.optString("name_id","Layanan")).setView(box).setNegativeButton("Batal",null).setPositiveButton("Simpan",(d,w)->io.execute(()->{
+            try{
+                JSONObject b=new JSONObject();
+                b.put("p_service_id",s.optString("id"));
+                b.put("p_active",active.getSelectedItemPosition()==0);
+                b.put("p_booking_enabled",booking.getSelectedItemPosition()==0);
+                b.put("p_capacity_default",Math.max(1,parseMoney(capacity.getText().toString())));
+                String dur=duration.getText().toString().trim();b.put("p_duration_minutes",dur.isEmpty()?JSONObject.NULL:parseMoney(dur));
+                boolean req=deposit.getSelectedItemPosition()==1;b.put("p_requires_deposit",req);
+                b.put("p_minimum_deposit",req?parseMoney(minimum.getText().toString()):0);
+                rpc("owner_update_service_config",b);
+                runOnUiThread(()->{NativeUi.toast(this,"Layanan diperbarui.");showOwnerServices();});
+            }catch(Exception e){runOnUiThread(()->NativeUi.toast(this,NativeUi.errorText(e.getMessage())));}
+        })).show();
+    }
+
     private void ownerEditPrice(JSONObject p,String name){
-        EditText amount=NativeUi.moneyInput(this,"Harga");if(!p.isNull("amount"))amount.setText(String.valueOf(p.optInt("amount")));new AlertDialog.Builder(this).setTitle(name).setView(amount).setNegativeButton("Batal",null).setPositiveButton("Simpan",(d,w)->io.execute(()->{
-            try{JSONObject b=new JSONObject();b.put("p_service_id",p.optString("service_id"));b.put("p_vehicle_category",p.isNull("vehicle_category")?JSONObject.NULL:p.optString("vehicle_category"));b.put("p_amount",parseMoney(amount.getText().toString()));b.put("p_price_label",JSONObject.NULL);b.put("p_active",true);rpc("owner_update_service_price",b);runOnUiThread(()->{NativeUi.toast(this,"Harga diperbarui.");showOwnerServices();});}catch(Exception e){runOnUiThread(()->NativeUi.toast(this,NativeUi.errorText(e.getMessage())));}
+        EditText amount=NativeUi.moneyInput(this,"Harga");if(!p.isNull("amount"))amount.setText(String.valueOf(p.optInt("amount")));
+        new AlertDialog.Builder(this).setTitle(name).setView(amount).setNegativeButton("Batal",null).setPositiveButton("Simpan",(d,w)->io.execute(()->{
+            try{
+                JSONObject b=new JSONObject();b.put("p_service_id",p.optString("service_id"));
+                b.put("p_vehicle_category",p.isNull("vehicle_category")?JSONObject.NULL:p.optString("vehicle_category"));
+                b.put("p_amount",parseMoney(amount.getText().toString()));b.put("p_price_label",JSONObject.NULL);b.put("p_active",true);
+                rpc("owner_update_service_price",b);
+                runOnUiThread(()->{NativeUi.toast(this,"Harga diperbarui.");showOwnerServices();});
+            }catch(Exception e){runOnUiThread(()->NativeUi.toast(this,NativeUi.errorText(e.getMessage())));}
         })).show();
     }
 
@@ -849,8 +917,50 @@ public class InternalActivity extends Activity {
 
     private void showRewards(){
         clear("Reward","home");addLoading("Memuat reward…");io.execute(()->{
-            try{JSONArray rows=get("reward_catalog?select=id,code,title_id,reward_type,points_cost,voucher_amount,min_transaction,validity_days,active,sort_order&business_code=eq.starpoint_garage&order=sort_order.asc");runOnUiThread(()->{content.removeAllViews();content.addView(NativeUi.section(this,"Reward"));NativeUi.gap(this,content,12);for(int i=0;i<rows.length();i++){JSONObject r=rows.optJSONObject(i);if(r==null)continue;LinearLayout c=NativeUi.card(this);c.addView(NativeUi.text(this,r.optString("title_id"),15,true));c.addView(NativeUi.muted(this,r.optString("code")+"  •  "+r.optInt("points_cost")+" point",11));c.addView(NativeUi.chip(this,r.optBoolean("active")?"AKTIF":"NONAKTIF",r.optBoolean("active")?NativeUi.GREEN:NativeUi.MUTED));NativeUi.margin(this,c,8);content.addView(c);}buildNav("home");});}catch(Exception e){runOnUiThread(()->replaceLoadingWithError(e));}
+            try{
+                JSONArray rows=get("reward_catalog?select=id,code,title_id,reward_type,service_id,vehicle_category,points_cost,voucher_amount,min_transaction,validity_days,active,sort_order&business_code=eq.starpoint_garage&order=sort_order.asc");
+                runOnUiThread(()->{
+                    content.removeAllViews();content.addView(NativeUi.section(this,"Reward"));NativeUi.gap(this,content,12);
+                    for(int i=0;i<rows.length();i++){
+                        JSONObject r=rows.optJSONObject(i);if(r==null)continue;
+                        LinearLayout card=NativeUi.card(this);
+                        card.addView(NativeUi.text(this,r.optString("title_id"),15,true));
+                        card.addView(NativeUi.muted(this,r.optString("code")+"  •  "+r.optInt("points_cost")+" point",11));
+                        card.addView(NativeUi.chip(this,r.optBoolean("active")?"AKTIF":"NONAKTIF",r.optBoolean("active")?NativeUi.GREEN:NativeUi.MUTED));
+                        NativeUi.gap(this,card,8);Button edit=NativeUi.button(this,"Ubah",false);edit.setOnClickListener(v->ownerRewardDialog(r));card.addView(edit,NativeUi.match(this));
+                        NativeUi.margin(this,card,8);content.addView(card);
+                    }
+                    buildNav("home");
+                });
+            }catch(Exception e){runOnUiThread(()->replaceLoadingWithError(e));}
         });
+    }
+
+    private void ownerRewardDialog(JSONObject r){
+        LinearLayout box=NativeUi.page(this);
+        EditText title=NativeUi.input(this,"Nama Reward");title.setText(r.optString("title_id"));
+        EditText points=NativeUi.moneyInput(this,"Point");points.setText(String.valueOf(r.optInt("points_cost")));
+        EditText voucher=NativeUi.moneyInput(this,"Nilai Voucher");if(!r.isNull("voucher_amount"))voucher.setText(String.valueOf(r.optInt("voucher_amount")));
+        EditText minTx=NativeUi.moneyInput(this,"Minimum Transaksi");minTx.setText(String.valueOf(r.optInt("min_transaction")));
+        EditText validity=NativeUi.moneyInput(this,"Masa Berlaku (hari)");validity.setText(String.valueOf(r.optInt("validity_days",30)));
+        Spinner active=NativeUi.spinner(this);active.setAdapter(adapter(new String[]{"Aktif","Nonaktif"}));active.setSelection(r.optBoolean("active",true)?0:1);
+        box.addView(title,NativeUi.match(this));NativeUi.gap(this,box,8);box.addView(points,NativeUi.match(this));NativeUi.gap(this,box,8);
+        box.addView(voucher,NativeUi.match(this));NativeUi.gap(this,box,8);box.addView(minTx,NativeUi.match(this));NativeUi.gap(this,box,8);
+        box.addView(validity,NativeUi.match(this));NativeUi.gap(this,box,8);box.addView(active,NativeUi.match(this));
+        new AlertDialog.Builder(this).setTitle("Reward").setView(box).setNegativeButton("Batal",null).setPositiveButton("Simpan",(d,w)->io.execute(()->{
+            try{
+                JSONObject b=new JSONObject();
+                b.put("p_reward_id",r.optString("id"));b.put("p_code",r.optString("code"));b.put("p_title",title.getText().toString().trim());
+                b.put("p_reward_type",r.optString("reward_type"));b.put("p_service_id",r.isNull("service_id")?JSONObject.NULL:r.optString("service_id"));
+                b.put("p_vehicle_category",r.isNull("vehicle_category")?JSONObject.NULL:r.optString("vehicle_category"));
+                b.put("p_points_cost",parseMoney(points.getText().toString()));
+                String vv=voucher.getText().toString().trim();b.put("p_voucher_amount",vv.isEmpty()?JSONObject.NULL:parseMoney(vv));
+                b.put("p_min_transaction",parseMoney(minTx.getText().toString()));b.put("p_validity_days",parseMoney(validity.getText().toString()));
+                b.put("p_active",active.getSelectedItemPosition()==0);b.put("p_sort_order",r.optInt("sort_order"));
+                rpc("owner_save_reward_catalog",b);
+                runOnUiThread(()->{NativeUi.toast(this,"Reward diperbarui.");showRewards();});
+            }catch(Exception e){runOnUiThread(()->NativeUi.toast(this,NativeUi.errorText(e.getMessage())));}
+        })).show();
     }
 
     private void showMembership(){
@@ -867,8 +977,43 @@ public class InternalActivity extends Activity {
 
     private void showWarranties(){
         clear("Warranty Coating","home");addLoading("Memuat warranty…");io.execute(()->{
-            try{JSONArray rows=get("coating_warranties?select=id,member_id,starts_on,ends_on,next_maintenance_on,status,notes,created_at&order=created_at.desc&limit=150");runOnUiThread(()->{content.removeAllViews();content.addView(NativeUi.section(this,"Warranty Coating"));NativeUi.gap(this,content,12);if(rows.length()==0)content.addView(NativeUi.muted(this,"Belum ada warranty.",13));for(int i=0;i<rows.length();i++){JSONObject w=rows.optJSONObject(i);if(w==null)continue;LinearLayout c=NativeUi.card(this);c.addView(NativeUi.text(this,w.optString("status","active").toUpperCase(Locale.ROOT),14,true));c.addView(NativeUi.muted(this,w.optString("starts_on")+"  →  "+w.optString("ends_on"),11));c.addView(NativeUi.muted(this,"Maintenance: "+w.optString("next_maintenance_on","-"),11));NativeUi.margin(this,c,8);content.addView(c);}buildNav("home");});}catch(Exception e){runOnUiThread(()->replaceLoadingWithError(e));}
+            try{
+                JSONArray rows=get("coating_warranties?select=id,member_id,starts_on,ends_on,next_maintenance_on,status,notes,created_at&order=created_at.desc&limit=150");
+                runOnUiThread(()->{
+                    content.removeAllViews();content.addView(NativeUi.section(this,"Warranty Coating"));NativeUi.gap(this,content,12);
+                    if(rows.length()==0)content.addView(NativeUi.muted(this,"Belum ada warranty.",13));
+                    for(int i=0;i<rows.length();i++){
+                        JSONObject w=rows.optJSONObject(i);if(w==null)continue;
+                        LinearLayout card=NativeUi.card(this);
+                        card.addView(NativeUi.text(this,w.optString("status","active").toUpperCase(Locale.ROOT),14,true));
+                        card.addView(NativeUi.muted(this,w.optString("starts_on")+"  →  "+w.optString("ends_on"),11));
+                        card.addView(NativeUi.muted(this,"Maintenance: "+w.optString("next_maintenance_on","-"),11));
+                        if(!w.optString("notes","").isEmpty())card.addView(NativeUi.muted(this,w.optString("notes"),11));
+                        NativeUi.gap(this,card,8);Button edit=NativeUi.button(this,"Ubah",false);edit.setOnClickListener(v->ownerWarrantyDialog(w));card.addView(edit,NativeUi.match(this));
+                        NativeUi.margin(this,card,8);content.addView(card);
+                    }
+                    buildNav("home");
+                });
+            }catch(Exception e){runOnUiThread(()->replaceLoadingWithError(e));}
         });
+    }
+
+    private void ownerWarrantyDialog(JSONObject w){
+        LinearLayout box=NativeUi.page(this);
+        String[] labels={"Aktif","Kedaluwarsa","Void"};String[] vals={"active","expired","void"};
+        Spinner status=NativeUi.spinner(this);status.setAdapter(adapter(labels));
+        String current=w.optString("status","active");status.setSelection("expired".equals(current)?1:"void".equals(current)?2:0);
+        EditText next=NativeUi.input(this,"Maintenance berikutnya (YYYY-MM-DD)");next.setText(w.optString("next_maintenance_on",""));
+        EditText notes=NativeUi.input(this,"Catatan");notes.setText(w.optString("notes",""));
+        box.addView(status,NativeUi.match(this));NativeUi.gap(this,box,8);box.addView(next,NativeUi.match(this));NativeUi.gap(this,box,8);box.addView(notes,NativeUi.match(this));
+        new AlertDialog.Builder(this).setTitle("Warranty Coating").setView(box).setNegativeButton("Batal",null).setPositiveButton("Simpan",(d,x)->io.execute(()->{
+            try{
+                JSONObject b=new JSONObject();b.put("p_warranty_id",w.optString("id"));b.put("p_status",vals[status.getSelectedItemPosition()]);
+                String n=next.getText().toString().trim();b.put("p_next_maintenance_on",n.isEmpty()?JSONObject.NULL:n);b.put("p_notes",notes.getText().toString().trim());
+                rpc("owner_update_warranty",b);
+                runOnUiThread(()->{NativeUi.toast(this,"Warranty diperbarui.");showWarranties();});
+            }catch(Exception e){runOnUiThread(()->NativeUi.toast(this,NativeUi.errorText(e.getMessage())));}
+        })).show();
     }
 
     private void showBusinessSettings(){
