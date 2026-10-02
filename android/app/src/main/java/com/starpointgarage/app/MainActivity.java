@@ -40,7 +40,16 @@ public class MainActivity extends Activity {
     }
 
     private void routeExisting() {
-        Class<?> cls = "staff".equals(AppSession.type(this)) ? StaffActivity.class : MemberActivity.class;
+        String type = AppSession.type(this);
+        JSONObject p = AppSession.profile(this);
+        Class<?> cls;
+        if ("owner".equals(type) || ("staff".equals(type) && "owner_admin".equals(p.optString("role")))) {
+            cls = OwnerActivity.class;
+        } else if ("technician".equals(type) || "staff".equals(type)) {
+            cls = StaffActivity.class;
+        } else {
+            cls = MemberActivity.class;
+        }
         startActivity(new Intent(this, cls));
         finish();
     }
@@ -54,13 +63,22 @@ public class MainActivity extends Activity {
         LinearLayout portals = new LinearLayout(this);
         portals.setOrientation(LinearLayout.HORIZONTAL);
         Button member = NativeUi.button(this, "Member", "member".equals(portal));
-        Button staff = NativeUi.button(this, "Staff / Owner", "staff".equals(portal));
-        portals.addView(member, new LinearLayout.LayoutParams(0, NativeUi.dp(this,48), 1));
-        LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(NativeUi.dp(this,8), 1);
-        View spacer = new View(this); portals.addView(spacer, sp);
-        portals.addView(staff, new LinearLayout.LayoutParams(0, NativeUi.dp(this,48), 1));
+        Button technician = NativeUi.button(this, "Teknisi", "technician".equals(portal));
+        Button owner = NativeUi.button(this, "Owner", "owner".equals(portal));
+        member.setTextSize(12);
+        technician.setTextSize(12);
+        owner.setTextSize(12);
+        LinearLayout.LayoutParams portalLp = new LinearLayout.LayoutParams(0, NativeUi.dp(this,48), 1);
+        portals.addView(member, portalLp);
+        LinearLayout.LayoutParams portalLp2 = new LinearLayout.LayoutParams(0, NativeUi.dp(this,48), 1);
+        portalLp2.leftMargin = NativeUi.dp(this,6);
+        portals.addView(technician, portalLp2);
+        LinearLayout.LayoutParams portalLp3 = new LinearLayout.LayoutParams(0, NativeUi.dp(this,48), 1);
+        portalLp3.leftMargin = NativeUi.dp(this,6);
+        portals.addView(owner, portalLp3);
         member.setOnClickListener(v -> { portal = "member"; action = "login"; render(); });
-        staff.setOnClickListener(v -> { portal = "staff"; action = "login"; render(); });
+        technician.setOnClickListener(v -> { portal = "technician"; action = "login"; render(); });
+        owner.setOnClickListener(v -> { portal = "owner"; action = "login"; render(); });
         root.addView(portals, NativeUi.match(this));
         NativeUi.gap(this, root, 18);
 
@@ -110,15 +128,16 @@ public class MainActivity extends Activity {
             if ("forgot_password".equals(action)) return "Reset Password";
             return "Login Member";
         }
-        if ("activate".equals(action)) return "Aktivasi Staff";
-        if ("forgot_password".equals(action)) return "Reset Password Staff";
-        return "Login Staff / Owner";
+        String roleName = "owner".equals(portal) ? "Owner/Admin" : "Teknisi";
+        if ("activate".equals(action)) return "Aktivasi " + roleName;
+        if ("forgot_password".equals(action)) return "Reset Password " + roleName;
+        return "Login " + roleName;
     }
 
     private String subtitleText() {
-        return "member".equals(portal)
-                ? "Gunakan akun Starpoint Garage."
-                : "Akses operasional Teknisi dan Owner/Admin.";
+        if ("member".equals(portal)) return "Gunakan akun Starpoint Garage.";
+        if ("owner".equals(portal)) return "Akses khusus Owner/Admin Starpoint Garage.";
+        return "Akses operasional khusus Teknisi.";
     }
 
     private void renderMemberForm(LinearLayout form) {
@@ -251,7 +270,7 @@ public class MainActivity extends Activity {
             Button submit = NativeUi.button(this, "Kirim link reset", true);
             form.addView(submit, NativeUi.match(this));
             submit.setOnClickListener(v -> authStaff(submit, new JSONObjectBuilder()
-                    .put("action","forgot_password").put("email",email.getText().toString().trim()).build()));
+                    .put("action","forgot_password").put("portal", portal).put("email",email.getText().toString().trim()).build()));
             return;
         }
 
@@ -263,6 +282,7 @@ public class MainActivity extends Activity {
         form.addView(submit, NativeUi.match(this));
         submit.setOnClickListener(v -> authStaff(submit, new JSONObjectBuilder()
                 .put("action", action)
+                .put("portal", portal)
                 .put("email", email.getText().toString().trim())
                 .put("password", password.getText().toString()).build()));
     }
@@ -383,8 +403,13 @@ public class MainActivity extends Activity {
                 }
                 JSONObject session = out.getJSONObject("session");
                 JSONObject staff = out.optJSONObject("staff");
-                AppSession.save(this,"staff",session.getString("access_token"),session.optString("refresh_token",""),
-                        staff == null ? new JSONObject() : staff);
+                JSONObject savedStaff = staff == null ? new JSONObject() : staff;
+                String returnedRole = savedStaff.optString("role", "");
+                String expectedRole = "owner".equals(portal) ? "owner_admin" : "cashier_technician";
+                if (!expectedRole.equals(returnedRole)) throw new Exception("WRONG_STAFF_PORTAL");
+                String sessionType = "owner_admin".equals(returnedRole) ? "owner" : "technician";
+                AppSession.save(this,sessionType,session.getString("access_token"),session.optString("refresh_token",""),
+                        savedStaff);
                 runOnUiThread(this::routeExisting);
             } catch (Exception e) {
                 runOnUiThread(() -> { busy(submit,false); status.setText(NativeUi.errorText(e.getMessage())); });

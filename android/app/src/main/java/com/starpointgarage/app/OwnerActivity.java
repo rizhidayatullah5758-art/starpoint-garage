@@ -28,7 +28,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class StaffActivity extends Activity {
+public class OwnerActivity extends Activity {
     private final ExecutorService io=Executors.newFixedThreadPool(3);
     private LinearLayout content;
     private JSONObject staff;
@@ -42,8 +42,8 @@ public class StaffActivity extends Activity {
         super.onCreate(b);
         staff=AppSession.profile(this);role=staff.optString("role","");
         String sessionType=AppSession.type(this);
-        if(!"cashier_technician".equals(role) ||
-           !("technician".equals(sessionType) || "staff".equals(sessionType))){logout();return;}
+        if(!"owner_admin".equals(role) ||
+           !("owner".equals(sessionType) || "staff".equals(sessionType))){logout();return;}
         getWindow().setStatusBarColor(NativeUi.BG);getWindow().setNavigationBarColor(NativeUi.BG);
         buildChrome();showSummary();
     }
@@ -52,13 +52,16 @@ public class StaffActivity extends Activity {
         LinearLayout shell=new LinearLayout(this);shell.setOrientation(LinearLayout.VERTICAL);shell.setBackgroundColor(NativeUi.BG);
         LinearLayout top=NativeUi.page(this);top.setPadding(NativeUi.dp(this,18),NativeUi.dp(this,14),NativeUi.dp(this,18),NativeUi.dp(this,12));
         top.addView(NativeUi.text(this,"STARPOINT GARAGE",20,true));
-        top.addView(NativeUi.muted(this,staff.optString("display_name","Teknisi")+" · Teknisi",12));
+        top.addView(NativeUi.muted(this,staff.optString("display_name","Owner")+" · Owner/Admin",12));
         shell.addView(top,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT));
 
         ScrollView scroll=new ScrollView(this);scroll.setFillViewport(true);content=NativeUi.page(this);scroll.addView(content);shell.addView(scroll,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,0,1));
 
         LinearLayout nav=new LinearLayout(this);nav.setPadding(NativeUi.dp(this,6),NativeUi.dp(this,7),NativeUi.dp(this,6),NativeUi.dp(this,7));nav.setBackgroundColor(Color.rgb(14,14,14));
-        addNav(nav,"Ringkas",this::showSummary);addNav(nav,"Booking",this::showBookings);addNav(nav,"Bayar",this::showPayments);addNav(nav,"Check-in",this::showCheckin);
+        addNav(nav,"Ringkas",this::showSummary);
+        addNav(nav,"Member",this::showOwner);
+        addNav(nav,"Booking",this::showBookings);
+        addNav(nav,"Bayar",this::showPayments);
         addNav(nav,"Akun",this::showAccount);
         shell.addView(nav,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,NativeUi.dp(this,66)));setContentView(shell);
     }
@@ -233,7 +236,7 @@ public class StaffActivity extends Activity {
     }
 
     private void showAccount(){
-        clear("Akun Teknisi","Sesi Teknisi aktif di aplikasi native.");
+        clear("Akun Owner","Sesi Owner/Admin aktif di aplikasi native.");
         content.addView(NativeUi.text(this,staff.optString("display_name","Staff"),18,true));
         content.addView(NativeUi.muted(this,"Role: "+role,13));
         NativeUi.gap(this,content,16);Button out=NativeUi.button(this,"Keluar",false);out.setOnClickListener(v->logout());content.addView(out,NativeUi.match(this));

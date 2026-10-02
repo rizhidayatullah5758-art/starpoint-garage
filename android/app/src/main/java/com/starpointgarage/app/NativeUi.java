@@ -149,7 +149,8 @@ public final class NativeUi {
             case "WEAK_PASSWORD": return "Password minimal 8 karakter, berisi huruf dan angka.";
             case "USERNAME_TAKEN": return "Username sudah dipakai.";
             case "EMAIL_TAKEN": return "Email sudah terdaftar.";
-            case "STAFF_NOT_ALLOWED": return "Email ini tidak terdaftar sebagai staff.";
+            case "STAFF_NOT_ALLOWED": return "Email ini tidak terdaftar pada akses yang dipilih.";
+            case "WRONG_STAFF_PORTAL": return "Akun ini terdaftar pada portal lain. Pilih Teknisi atau Owner yang sesuai.";
             case "ACCOUNT_EXISTS": return "Akun staff sudah aktif. Gunakan Login.";
             case "PROFILE_INCOMPLETE": return "Lengkapi profil dan avatar sebelum booking.";
             case "PAYMENT_ALREADY_WAITING_VERIFICATION": return "Masih ada pembayaran yang menunggu verifikasi.";
