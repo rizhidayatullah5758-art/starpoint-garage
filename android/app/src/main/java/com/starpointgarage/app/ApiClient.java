@@ -20,29 +20,77 @@ public final class ApiClient {
     private ApiClient() {}
 
     public static Object function(String slug, JSONObject body) throws Exception {
-        return request("POST", BASE + "/functions/v1/" + slug, body.toString().getBytes(StandardCharsets.UTF_8),
-                "application/json", null);
+        return request("POST", BASE + "/functions/v1/" + slug,
+                body.toString().getBytes(StandardCharsets.UTF_8), "application/json", null);
     }
 
     public static Object rpc(String name, JSONObject body, String token) throws Exception {
-        return request("POST", BASE + "/rest/v1/rpc/" + name, body.toString().getBytes(StandardCharsets.UTF_8),
-                "application/json", token);
+        return request("POST", BASE + "/rest/v1/rpc/" + name,
+                body.toString().getBytes(StandardCharsets.UTF_8), "application/json", token);
     }
 
     public static JSONArray getArray(String pathAndQuery, String token) throws Exception {
-        Object out = request("GET", BASE + "/rest/v1/" + pathAndQuery, null, "application/json", token);
-        if (out instanceof JSONArray) return (JSONArray) out;
-        JSONArray a = new JSONArray();
-        if (out instanceof JSONObject) a.put(out);
-        return a;
+        return asArray(request("GET", BASE + "/rest/v1/" + pathAndQuery, null, "application/json", token));
+    }
+
+    public static Object patch(String pathAndQuery, JSONObject body, String token) throws Exception {
+        return request("PATCH", BASE + "/rest/v1/" + pathAndQuery,
+                body.toString().getBytes(StandardCharsets.UTF_8), "application/json", token,
+                "return=representation");
+    }
+
+    public static JSONObject refreshSession(String refreshToken) throws Exception {
+        JSONObject body = new JSONObject();
+        body.put("refresh_token", refreshToken);
+        Object out = request("POST", BASE + "/auth/v1/token?grant_type=refresh_token",
+                body.toString().getBytes(StandardCharsets.UTF_8), "application/json", null);
+        return asObject(out);
+    }
+
+    public static String createSignedUrl(String bucket, String path, int expiresIn, String token) throws Exception {
+        JSONObject body = new JSONObject();
+        body.put("expiresIn", expiresIn);
+        String safePath = Uri.encode(path == null ? "" : path, "/");
+        Object out = request("POST", BASE + "/storage/v1/object/sign/" + bucket + "/" + safePath,
+                body.toString().getBytes(StandardCharsets.UTF_8), "application/json", token);
+        JSONObject o = asObject(out);
+        String signed = o.optString("signedURL", o.optString("signedUrl", ""));
+        if (signed.isEmpty()) throw new Exception("SIGNED_URL_FAILED");
+        if (signed.startsWith("http")) return signed;
+        if (signed.startsWith("/storage/v1")) return BASE + signed;
+        if (signed.startsWith("/object/")) return BASE + "/storage/v1" + signed;
+        return BASE + "/storage/v1/" + signed;
+    }
+
+    public static byte[] downloadBytes(String absoluteUrl, String token) throws Exception {
+        HttpURLConnection c = (HttpURLConnection) new URL(absoluteUrl).openConnection();
+        c.setRequestMethod("GET");
+        c.setConnectTimeout(15000);
+        c.setReadTimeout(25000);
+        c.setRequestProperty("apikey", KEY);
+        if (token != null && !token.isEmpty()) c.setRequestProperty("Authorization", "Bearer " + token);
+        int code = c.getResponseCode();
+        InputStream stream = code >= 200 && code < 300 ? c.getInputStream() : c.getErrorStream();
+        byte[] bytes = stream == null ? new byte[0] : readAll(stream);
+        c.disconnect();
+        if (code < 200 || code >= 300) throw new Exception("HTTP_" + code);
+        return bytes;
     }
 
     public static JSONObject asObject(Object out) {
         if (out instanceof JSONObject) return (JSONObject) out;
         if (out instanceof JSONArray && ((JSONArray) out).length() > 0) {
-            return ((JSONArray) out).optJSONObject(0);
+            JSONObject o = ((JSONArray) out).optJSONObject(0);
+            return o == null ? new JSONObject() : o;
         }
         return new JSONObject();
+    }
+
+    public static JSONArray asArray(Object out) {
+        if (out instanceof JSONArray) return (JSONArray) out;
+        JSONArray a = new JSONArray();
+        if (out instanceof JSONObject) a.put(out);
+        return a;
     }
 
     public static String q(String value) {
@@ -51,7 +99,7 @@ public final class ApiClient {
 
     public static void upload(String bucket, String path, byte[] data, String mime, String token) throws Exception {
         requestRaw("POST", BASE + "/storage/v1/object/" + bucket + "/" + path, data,
-                mime == null ? "application/octet-stream" : mime, token);
+                mime == null ? "application/octet-stream" : mime, token, null);
     }
 
     public static byte[] readAll(InputStream in) throws Exception {
@@ -64,19 +112,24 @@ public final class ApiClient {
     }
 
     private static Object request(String method, String url, byte[] body, String contentType, String token) throws Exception {
-        String raw = requestRaw(method, url, body, contentType, token);
+        return request(method, url, body, contentType, token, null);
+    }
+
+    private static Object request(String method, String url, byte[] body, String contentType, String token, String prefer) throws Exception {
+        String raw = requestRaw(method, url, body, contentType, token, prefer);
         if (raw == null || raw.trim().isEmpty()) return new JSONObject();
         Object parsed = new JSONTokener(raw).nextValue();
         return parsed == null ? new JSONObject() : parsed;
     }
 
-    private static String requestRaw(String method, String url, byte[] body, String contentType, String token) throws Exception {
+    private static String requestRaw(String method, String url, byte[] body, String contentType, String token, String prefer) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
         c.setRequestMethod(method);
         c.setConnectTimeout(15000);
         c.setReadTimeout(25000);
         c.setRequestProperty("apikey", KEY);
         c.setRequestProperty("Accept", "application/json");
+        if (prefer != null) c.setRequestProperty("Prefer", prefer);
         if (token != null && !token.isEmpty()) c.setRequestProperty("Authorization", "Bearer " + token);
         if (body != null) {
             c.setDoOutput(true);
@@ -94,6 +147,8 @@ public final class ApiClient {
             try {
                 JSONObject e = new JSONObject(raw);
                 message = e.optString("error", e.optString("message", message));
+                String codeText = e.optString("code", "");
+                if (!codeText.isEmpty() && !message.contains(codeText)) message = message + ":" + codeText;
             } catch (Exception ignored) {}
             throw new Exception(message);
         }

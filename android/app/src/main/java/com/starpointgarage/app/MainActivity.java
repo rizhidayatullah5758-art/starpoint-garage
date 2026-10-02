@@ -1,12 +1,13 @@
 package com.starpointgarage.app;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Patterns;
-import android.view.View;
+import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -14,16 +15,13 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends Activity {
     private final ExecutorService io = Executors.newSingleThreadExecutor();
-    private LinearLayout root;
-    private String portal = "member";
-    private String action = "login";
+    private String mode = "login";
     private TextView status;
 
     @Override
@@ -31,409 +29,148 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().setStatusBarColor(NativeUi.BG);
         getWindow().setNavigationBarColor(NativeUi.BG);
-
         if (AppSession.exists(this)) {
-            routeExisting();
+            route();
             return;
         }
         render();
     }
 
-    private void routeExisting() {
-        String type = AppSession.type(this);
-        JSONObject p = AppSession.profile(this);
-        Class<?> cls;
-        if ("owner".equals(type) || ("staff".equals(type) && "owner_admin".equals(p.optString("role")))) {
-            cls = OwnerActivity.class;
-        } else if ("technician".equals(type) || "staff".equals(type)) {
-            cls = StaffActivity.class;
-        } else {
-            cls = MemberActivity.class;
-        }
-        startActivity(new Intent(this, cls));
+    private void route() {
+        startActivity(new Intent(this, InternalActivity.class));
         finish();
     }
 
     private void render() {
-        root = NativeUi.page(this);
-        root.addView(NativeUi.text(this, "STARPOINT GARAGE", 24, true));
-        root.addView(NativeUi.muted(this, "Native Android App · Surabaya", 13));
-        NativeUi.gap(this, root, 22);
-
-        LinearLayout portals = new LinearLayout(this);
-        portals.setOrientation(LinearLayout.HORIZONTAL);
-        Button member = NativeUi.button(this, "Member", "member".equals(portal));
-        Button technician = NativeUi.button(this, "Teknisi", "technician".equals(portal));
-        Button owner = NativeUi.button(this, "Owner", "owner".equals(portal));
-        member.setTextSize(12);
-        technician.setTextSize(12);
-        owner.setTextSize(12);
-        LinearLayout.LayoutParams portalLp = new LinearLayout.LayoutParams(0, NativeUi.dp(this,48), 1);
-        portals.addView(member, portalLp);
-        LinearLayout.LayoutParams portalLp2 = new LinearLayout.LayoutParams(0, NativeUi.dp(this,48), 1);
-        portalLp2.leftMargin = NativeUi.dp(this,6);
-        portals.addView(technician, portalLp2);
-        LinearLayout.LayoutParams portalLp3 = new LinearLayout.LayoutParams(0, NativeUi.dp(this,48), 1);
-        portalLp3.leftMargin = NativeUi.dp(this,6);
-        portals.addView(owner, portalLp3);
-        member.setOnClickListener(v -> { portal = "member"; action = "login"; render(); });
-        technician.setOnClickListener(v -> { portal = "technician"; action = "login"; render(); });
-        owner.setOnClickListener(v -> { portal = "owner"; action = "login"; render(); });
-        root.addView(portals, NativeUi.match(this));
-        NativeUi.gap(this, root, 18);
-
-        LinearLayout tabs = new LinearLayout(this);
-        tabs.setOrientation(LinearLayout.HORIZONTAL);
-        String[] acts = "member".equals(portal)
-                ? new String[]{"login","register","forgot_password"}
-                : new String[]{"login","activate","forgot_password"};
-        String[] names = "member".equals(portal)
-                ? new String[]{"Login","Daftar","Lupa PW"}
-                : new String[]{"Login","Aktivasi","Lupa PW"};
-        for (int i=0;i<acts.length;i++) {
-            Button b = NativeUi.button(this, names[i], acts[i].equals(action));
-            String a = acts[i];
-            b.setOnClickListener(v -> { action = a; render(); });
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, NativeUi.dp(this,44),1);
-            if (i>0) lp.leftMargin = NativeUi.dp(this,6);
-            tabs.addView(b, lp);
-        }
-        root.addView(tabs, NativeUi.match(this));
-        NativeUi.gap(this, root, 20);
-
-        LinearLayout form = NativeUi.card(this);
-        TextView title = NativeUi.text(this, titleText(), 20, true);
-        form.addView(title);
-        form.addView(NativeUi.muted(this, subtitleText(), 13));
-        NativeUi.gap(this, form, 16);
-
-        if ("member".equals(portal)) renderMemberForm(form); else renderStaffForm(form);
-
-        status = NativeUi.muted(this, "", 13);
-        NativeUi.margin(this, status, 14);
-        form.addView(status);
-        root.addView(form, NativeUi.match(this));
-
-        NativeUi.gap(this, root, 18);
-        TextView footer = NativeUi.muted(this,
-                "Aplikasi native ini terhubung langsung ke backend Starpoint Garage. Tidak menggunakan WebView.", 12);
-        root.addView(footer);
-
-        setContentView(NativeUi.scroll(this, root));
-    }
-
-    private String titleText() {
-        if ("member".equals(portal)) {
-            if ("register".equals(action)) return "Daftar Member";
-            if ("forgot_password".equals(action)) return "Reset Password";
-            return "Login Member";
-        }
-        String roleName = "owner".equals(portal) ? "Owner/Admin" : "Teknisi";
-        if ("activate".equals(action)) return "Aktivasi " + roleName;
-        if ("forgot_password".equals(action)) return "Reset Password " + roleName;
-        return "Login " + roleName;
-    }
-
-    private String subtitleText() {
-        if ("member".equals(portal)) return "Gunakan akun Starpoint Garage.";
-        if ("owner".equals(portal)) return "Akses khusus Owner/Admin Starpoint Garage.";
-        return "Akses operasional khusus Teknisi.";
-    }
-
-    private void renderMemberForm(LinearLayout form) {
-        if ("forgot_password".equals(action)) {
-            EditText email = NativeUi.input(this, "Email");
-            form.addView(email, NativeUi.match(this));
-            NativeUi.gap(this, form, 10);
-            Button submit = NativeUi.button(this, "Kirim link reset", true);
-            form.addView(submit, NativeUi.match(this));
-            submit.setOnClickListener(v -> authMember(submit, new JSONObjectBuilder()
-                    .put("action","forgot_password").put("businessCode","starpoint_garage")
-                    .put("email",email.getText().toString().trim()).build()));
-            return;
-        }
-
-        EditText fullName = null, email = null, birth = null, phone = null, referral = null;
-        if ("register".equals(action)) {
-            fullName = NativeUi.input(this, "Nama lengkap");
-            email = NativeUi.input(this, "Email");
-            email.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-            birth = NativeUi.input(this, "Tanggal lahir");
-            birth.setFocusable(false);
-            birth.setClickable(true);
-            final EditText birthField = birth;
-            birthField.setOnClickListener(v -> showBirthDatePicker(birthField));
-            phone = NativeUi.input(this, "No. WhatsApp (opsional)");
-            phone.setInputType(InputType.TYPE_CLASS_PHONE);
-            referral = NativeUi.input(this, "Kode referral (opsional)");
-            form.addView(fullName, NativeUi.match(this)); NativeUi.gap(this,form,8);
-        }
-
-        EditText username = NativeUi.input(this, "Username");
-        username.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        form.addView(username, NativeUi.match(this));
-        if ("register".equals(action)) {
-            form.addView(NativeUi.muted(this, "4–20 karakter: huruf, angka, titik, atau underscore.", 11));
-        }
-        NativeUi.gap(this,form,8);
-
-        if ("register".equals(action)) {
-            form.addView(email, NativeUi.match(this)); NativeUi.gap(this,form,8);
-        }
-
-        EditText password = NativeUi.password(this, "Password");
-        form.addView(password, NativeUi.match(this));
-        if ("register".equals(action)) {
-            form.addView(NativeUi.muted(this, "Minimal 8 karakter dan wajib berisi huruf + angka.", 11));
-        }
-
-        if ("register".equals(action)) {
-            NativeUi.gap(this,form,8); form.addView(birth, NativeUi.match(this));
-            form.addView(NativeUi.muted(this, "Ketuk untuk memilih tanggal lahir.", 11));
-            NativeUi.gap(this,form,8); form.addView(phone, NativeUi.match(this));
-            NativeUi.gap(this,form,8); form.addView(referral, NativeUi.match(this));
-        }
-
-        NativeUi.gap(this, form, 12);
-        Button submit = NativeUi.button(this, "register".equals(action) ? "Buat akun" : "Masuk", true);
-        form.addView(submit, NativeUi.match(this));
-
-        EditText fFullName = fullName, fEmail = email, fBirth = birth, fPhone = phone, fReferral = referral;
-        submit.setOnClickListener(v -> {
-            String usernameValue = username.getText().toString().trim().toLowerCase(Locale.ROOT);
-            String passwordValue = password.getText().toString();
-
-            if ("register".equals(action)) {
-                String validation = validateMemberRegistration(
-                        fFullName.getText().toString().trim(),
-                        usernameValue,
-                        fEmail.getText().toString().trim(),
-                        passwordValue,
-                        fBirth.getText().toString().trim()
-                );
-                if (validation != null) {
-                    status.setText(validation);
-                    return;
-                }
-            }
-
-            JSONObjectBuilder b = new JSONObjectBuilder().put("action",action).put("businessCode","starpoint_garage")
-                    .put("username",usernameValue)
-                    .put("password",passwordValue);
-            if ("register".equals(action)) {
-                b.put("fullName",fFullName.getText().toString().trim())
-                        .put("email",fEmail.getText().toString().trim().toLowerCase(Locale.ROOT))
-                        .put("birthDate",fBirth.getText().toString().trim())
-                        .put("phone",fPhone.getText().toString().trim())
-                        .put("referralCode",fReferral.getText().toString().trim());
-            }
-            authMember(submit, b.build());
-        });
-    }
-
-    private String validateMemberRegistration(String fullName, String username, String email, String password, String birthDate) {
-        if (fullName.isEmpty()) return "Nama lengkap wajib diisi.";
-        if (!username.matches("^[a-z0-9._]{4,20}$")) {
-            return "Username harus 4–20 karakter dan hanya boleh huruf, angka, titik, atau underscore.";
-        }
-        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            return "Format email tidak valid.";
-        }
-        if (password.length() < 8 || !password.matches(".*[A-Za-z].*") || !password.matches(".*\\d.*")) {
-            return "Password minimal 8 karakter dan harus berisi huruf + angka.";
-        }
-        if (!birthDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
-            return "Pilih tanggal lahir terlebih dahulu.";
-        }
-        return null;
-    }
-
-    private void showBirthDatePicker(EditText target) {
-        Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR) - 20;
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog dialog = new DatePickerDialog(this, (view, y, m, d) -> {
-            target.setText(String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d));
-        }, year, month, day);
-        dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        dialog.show();
-    }
-
-    private void renderStaffForm(LinearLayout form) {
-        EditText email = NativeUi.input(this, "Email staff");
-        form.addView(email, NativeUi.match(this));
-
-        if ("forgot_password".equals(action)) {
-            NativeUi.gap(this, form, 10);
-            Button submit = NativeUi.button(this, "Kirim link reset", true);
-            form.addView(submit, NativeUi.match(this));
-            submit.setOnClickListener(v -> authStaff(submit, new JSONObjectBuilder()
-                    .put("action","forgot_password").put("portal", portal).put("email",email.getText().toString().trim()).build()));
-            return;
-        }
-
-        NativeUi.gap(this, form, 8);
-        EditText password = NativeUi.password(this, "Password");
-        form.addView(password, NativeUi.match(this));
-        NativeUi.gap(this, form, 12);
-        Button submit = NativeUi.button(this, "activate".equals(action) ? "Aktifkan akun" : "Masuk", true);
-        form.addView(submit, NativeUi.match(this));
-        submit.setOnClickListener(v -> authStaff(submit, new JSONObjectBuilder()
-                .put("action", action)
-                .put("portal", portal)
-                .put("email", email.getText().toString().trim())
-                .put("password", password.getText().toString()).build()));
-    }
-
-    private void authMember(Button submit, JSONObject body) {
-        final boolean registering = "register".equals(action);
-        busy(submit,true);
-        io.execute(() -> {
-            try {
-                JSONObject out = ApiClient.asObject(ApiClient.function("member-auth", body));
-                if ("forgot_password".equals(action)) {
-                    runOnUiThread(() -> {
-                        busy(submit,false);
-                        status.setText(out.optString("message","Jika email terdaftar, link reset akan dikirim."));
-                    });
-                    return;
-                }
-
-                if (registering && !out.optBoolean("registration_complete", false)) {
-                    throw new Exception("REGISTRATION_INCOMPLETE");
-                }
-
-                JSONObject session = out.getJSONObject("session");
-                JSONObject member = out.optJSONObject("member");
-                final JSONObject savedMember = member == null ? new JSONObject() : member;
-                AppSession.save(this,"member",session.getString("access_token"),session.optString("refresh_token",""),
-                        savedMember);
-
-                if (registering) {
-                    final boolean existingMember = out.optBoolean("existing_member", false);
-                    runOnUiThread(() -> showRegistrationSuccess(savedMember, existingMember));
-                } else {
-                    runOnUiThread(this::routeExisting);
-                }
-            } catch (Exception e) {
-                runOnUiThread(() -> { busy(submit,false); status.setText(NativeUi.errorText(e.getMessage())); });
-            }
-        });
-    }
-
-    private void showRegistrationSuccess(JSONObject member, boolean existingMember) {
         LinearLayout page = NativeUi.page(this);
-        page.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-
-        NativeUi.gap(this, page, 36);
-
-        TextView check = NativeUi.center(this, "✓", 72, true);
-        page.addView(check, NativeUi.match(this));
-
-        NativeUi.gap(this, page, 10);
-
-        page.addView(NativeUi.center(
-                this,
-                existingMember ? "AKUN SUDAH TERDAFTAR" : "PENDAFTARAN BERHASIL",
-                24,
-                true
-        ), NativeUi.match(this));
-
-        NativeUi.gap(this, page, 10);
-
-        String name = member.optString("full_name", "Member Starpoint");
-        String username = member.optString("username", "");
-        String email = member.optString("email", "");
-
-        page.addView(NativeUi.center(this, name, 18, true), NativeUi.match(this));
-        if (!username.isEmpty()) {
-            page.addView(NativeUi.center(this, "@" + username, 14, false), NativeUi.match(this));
-        }
-        if (!email.isEmpty()) {
-            TextView emailView = NativeUi.center(this, email, 13, false);
-            emailView.setTextColor(NativeUi.MUTED);
-            page.addView(emailView, NativeUi.match(this));
-        }
-
-        NativeUi.gap(this, page, 22);
-
-        LinearLayout card = NativeUi.card(this);
-        card.addView(NativeUi.text(this, "Status akun", 13, false));
-        card.addView(NativeUi.text(this, "TERDAFTAR ✓", 20, true));
-        NativeUi.gap(this, card, 8);
-        card.addView(NativeUi.muted(
-                this,
-                "Akun Auth, profil Member, dan membership Starpoint Garage sudah terverifikasi.",
-                13
-        ));
-        page.addView(card, NativeUi.match(this));
-
-        NativeUi.gap(this, page, 18);
-
-        Button enter = NativeUi.button(this, "Masuk ke Aplikasi", true);
-        enter.setOnClickListener(v -> routeExisting());
-        page.addView(enter, NativeUi.match(this));
-
+        page.setGravity(Gravity.CENTER_HORIZONTAL);
         NativeUi.gap(this, page, 12);
-        page.addView(NativeUi.center(
-                this,
-                existingMember
-                        ? "Data akun ditemukan dan siap digunakan."
-                        : "Pendaftaran selesai. Kamu sekarang terdaftar sebagai Member Starpoint Garage.",
-                12,
-                false
-        ), NativeUi.match(this));
+
+        page.addView(BrandLogo.view(this, 320), new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, NativeUi.dp(this, 105)));
+        NativeUi.gap(this, page, 8);
+
+        TextView internal = NativeUi.center(this, "APLIKASI INTERNAL", 11, true);
+        internal.setTextColor(NativeUi.RED);
+        internal.setLetterSpacing(.18f);
+        page.addView(internal, NativeUi.match(this));
+        NativeUi.gap(this, page, 24);
+
+        LinearLayout card = NativeUi.redCard(this);
+        card.setPadding(NativeUi.dp(this, 20), NativeUi.dp(this, 22), NativeUi.dp(this, 20), NativeUi.dp(this, 22));
+
+        String title = "login".equals(mode) ? "Masuk" : "activate".equals(mode) ? "Aktivasi" : "Lupa Password";
+        TextView h = NativeUi.text(this, title, 30, true);
+        card.addView(h);
+        NativeUi.gap(this, card, 20);
+
+        EditText email = NativeUi.input(this, "Email");
+        email.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        card.addView(email, NativeUi.match(this));
+
+        EditText password = null;
+        if (!"forgot_password".equals(mode)) {
+            NativeUi.gap(this, card, 12);
+            password = NativeUi.password(this, "Password");
+            card.addView(password, NativeUi.match(this));
+        }
+
+        NativeUi.gap(this, card, 18);
+        Button submit = NativeUi.button(this,
+                "login".equals(mode) ? "Masuk" : "activate".equals(mode) ? "Aktifkan Akun" : "Kirim Link Reset", true);
+        card.addView(submit, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, NativeUi.dp(this, 54)));
+
+        status = NativeUi.muted(this, "", 12);
+        status.setGravity(Gravity.CENTER);
+        NativeUi.margin(this, status, 12);
+        card.addView(status);
+
+        NativeUi.gap(this, card, 6);
+        LinearLayout actions = new LinearLayout(this);
+        actions.setGravity(Gravity.CENTER);
+        Button login = NativeUi.textButton(this, "Masuk");
+        Button activate = NativeUi.textButton(this, "Aktivasi");
+        Button forgot = NativeUi.textButton(this, "Lupa Password");
+        actions.addView(login, NativeUi.weight(this, 42, 1));
+        actions.addView(activate, NativeUi.weight(this, 42, 1));
+        actions.addView(forgot, NativeUi.weight(this, 42, 1));
+        card.addView(actions, NativeUi.match(this));
+
+        page.addView(card, NativeUi.match(this));
+        NativeUi.gap(this, page, 18);
+        TextView role = NativeUi.chip(this, "OWNER / ADMIN  •  TEKNISI", NativeUi.RED);
+        role.setGravity(Gravity.CENTER);
+        page.addView(role, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        final EditText p = password;
+        submit.setOnClickListener(v -> {
+            String e = email.getText().toString().trim().toLowerCase(Locale.ROOT);
+            String pass = p == null ? "" : p.getText().toString();
+            if (e.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(e).matches()) {
+                status.setText("Email tidak valid.");
+                return;
+            }
+            if (!"forgot_password".equals(mode) && pass.isEmpty()) {
+                status.setText("Password wajib diisi.");
+                return;
+            }
+            authenticate(submit, e, pass);
+        });
+
+        login.setOnClickListener(v -> { mode = "login"; render(); });
+        activate.setOnClickListener(v -> { mode = "activate"; render(); });
+        forgot.setOnClickListener(v -> { mode = "forgot_password"; render(); });
 
         setContentView(NativeUi.scroll(this, page));
     }
 
-    private void authStaff(Button submit, JSONObject body) {
-        busy(submit,true);
+    private void authenticate(Button submit, String email, String password) {
+        submit.setEnabled(false);
+        submit.setAlpha(.6f);
+        status.setText("Memproses…");
+        final String action = mode;
         io.execute(() -> {
             try {
+                JSONObject body = new JSONObject();
+                body.put("action", action);
+                body.put("email", email);
+                if (!"forgot_password".equals(action)) body.put("password", password);
+
                 JSONObject out = ApiClient.asObject(ApiClient.function("staff-auth", body));
                 if ("forgot_password".equals(action)) {
                     runOnUiThread(() -> {
-                        busy(submit,false);
-                        status.setText(out.optString("message","Jika akun terdaftar, link reset akan dikirim."));
+                        submit.setEnabled(true);
+                        submit.setAlpha(1f);
+                        status.setText(out.optString("message", "Jika akun terdaftar, link reset akan dikirim."));
                     });
                     return;
                 }
+
                 JSONObject session = out.getJSONObject("session");
                 JSONObject staff = out.optJSONObject("staff");
-                JSONObject savedStaff = staff == null ? new JSONObject() : staff;
-                String returnedRole = savedStaff.optString("role", "");
-                String expectedRole = "owner".equals(portal) ? "owner_admin" : "cashier_technician";
-                if (!expectedRole.equals(returnedRole)) throw new Exception("WRONG_STAFF_PORTAL");
-                String sessionType = "owner_admin".equals(returnedRole) ? "owner" : "technician";
-                AppSession.save(this,sessionType,session.getString("access_token"),session.optString("refresh_token",""),
-                        savedStaff);
-                runOnUiThread(this::routeExisting);
+                if (staff == null) throw new Exception("STAFF_PROFILE_INACTIVE");
+                String role = staff.optString("role", "");
+                if (!"owner_admin".equals(role) && !"cashier_technician".equals(role)) {
+                    throw new Exception("STAFF_PROFILE_INACTIVE");
+                }
+                staff.put("email", email);
+                String type = "owner_admin".equals(role) ? "owner" : "technician";
+                AppSession.save(this, type,
+                        session.getString("access_token"), session.optString("refresh_token", ""), staff);
+                runOnUiThread(this::route);
             } catch (Exception e) {
-                runOnUiThread(() -> { busy(submit,false); status.setText(NativeUi.errorText(e.getMessage())); });
+                runOnUiThread(() -> {
+                    submit.setEnabled(true);
+                    submit.setAlpha(1f);
+                    status.setText(NativeUi.errorText(e.getMessage()));
+                });
             }
         });
-    }
-
-    private void busy(Button b, boolean on) {
-        b.setEnabled(!on);
-        b.setAlpha(on ? .55f : 1f);
     }
 
     @Override
     protected void onDestroy() {
         io.shutdownNow();
         super.onDestroy();
-    }
-
-    static class JSONObjectBuilder {
-        final JSONObject o = new JSONObject();
-        JSONObjectBuilder put(String k, Object v) {
-            try { o.put(k, v == null ? JSONObject.NULL : v); } catch (Exception ignored) {}
-            return this;
-        }
-        JSONObject build() { return o; }
     }
 }
