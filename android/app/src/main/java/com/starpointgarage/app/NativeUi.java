@@ -137,7 +137,11 @@ public final class NativeUi {
             case "INVALID_USERNAME": return "Username harus 4–20 karakter: huruf, angka, titik, atau underscore.";
             case "INVALID_EMAIL": return "Format email tidak valid.";
             case "INVALID_BIRTH_DATE": return "Tanggal lahir wajib dipilih.";
-            case "REGISTER_FAILED": return "Pendaftaran gagal dibuat. Coba lagi.";
+            case "REGISTER_FAILED": return "Pendaftaran belum berhasil dibuat. Coba lagi.";
+            case "REGISTRATION_INCOMPLETE": return "Pendaftaran belum selesai di server. Akun belum ditandai sebagai terdaftar.";
+            case "SESSION_CREATE_FAILED": return "Akun berhasil diproses, tetapi sesi login belum terbentuk. Coba Login.";
+            case "BUSINESS_ENROLLMENT_FAILED": return "Pendaftaran membership Starpoint belum selesai. Coba lagi.";
+            case "MEMBER_PROFILE_NOT_FOUND": return "Akun Auth ditemukan, tetapi profil Member belum lengkap.";
             case "REFERRAL_CODE_NOT_FOUND": return "Kode referral tidak ditemukan.";
             case "TOO_MANY_REQUESTS": return "Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.";
             case "SERVER_BUSY": return "Server sedang sibuk. Coba lagi sebentar.";

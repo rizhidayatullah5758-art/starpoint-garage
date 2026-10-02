@@ -268,6 +268,7 @@ public class MainActivity extends Activity {
     }
 
     private void authMember(Button submit, JSONObject body) {
+        final boolean registering = "register".equals(action);
         busy(submit,true);
         io.execute(() -> {
             try {
@@ -279,15 +280,93 @@ public class MainActivity extends Activity {
                     });
                     return;
                 }
+
+                if (registering && !out.optBoolean("registration_complete", false)) {
+                    throw new Exception("REGISTRATION_INCOMPLETE");
+                }
+
                 JSONObject session = out.getJSONObject("session");
                 JSONObject member = out.optJSONObject("member");
+                final JSONObject savedMember = member == null ? new JSONObject() : member;
                 AppSession.save(this,"member",session.getString("access_token"),session.optString("refresh_token",""),
-                        member == null ? new JSONObject() : member);
-                runOnUiThread(this::routeExisting);
+                        savedMember);
+
+                if (registering) {
+                    final boolean existingMember = out.optBoolean("existing_member", false);
+                    runOnUiThread(() -> showRegistrationSuccess(savedMember, existingMember));
+                } else {
+                    runOnUiThread(this::routeExisting);
+                }
             } catch (Exception e) {
                 runOnUiThread(() -> { busy(submit,false); status.setText(NativeUi.errorText(e.getMessage())); });
             }
         });
+    }
+
+    private void showRegistrationSuccess(JSONObject member, boolean existingMember) {
+        LinearLayout page = NativeUi.page(this);
+        page.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+
+        NativeUi.gap(this, page, 36);
+
+        TextView check = NativeUi.center(this, "✓", 72, true);
+        page.addView(check, NativeUi.match(this));
+
+        NativeUi.gap(this, page, 10);
+
+        page.addView(NativeUi.center(
+                this,
+                existingMember ? "AKUN SUDAH TERDAFTAR" : "PENDAFTARAN BERHASIL",
+                24,
+                true
+        ), NativeUi.match(this));
+
+        NativeUi.gap(this, page, 10);
+
+        String name = member.optString("full_name", "Member Starpoint");
+        String username = member.optString("username", "");
+        String email = member.optString("email", "");
+
+        page.addView(NativeUi.center(this, name, 18, true), NativeUi.match(this));
+        if (!username.isEmpty()) {
+            page.addView(NativeUi.center(this, "@" + username, 14, false), NativeUi.match(this));
+        }
+        if (!email.isEmpty()) {
+            TextView emailView = NativeUi.center(this, email, 13, false);
+            emailView.setTextColor(NativeUi.MUTED);
+            page.addView(emailView, NativeUi.match(this));
+        }
+
+        NativeUi.gap(this, page, 22);
+
+        LinearLayout card = NativeUi.card(this);
+        card.addView(NativeUi.text(this, "Status akun", 13, false));
+        card.addView(NativeUi.text(this, "TERDAFTAR ✓", 20, true));
+        NativeUi.gap(this, card, 8);
+        card.addView(NativeUi.muted(
+                this,
+                "Akun Auth, profil Member, dan membership Starpoint Garage sudah terverifikasi.",
+                13
+        ));
+        page.addView(card, NativeUi.match(this));
+
+        NativeUi.gap(this, page, 18);
+
+        Button enter = NativeUi.button(this, "Masuk ke Aplikasi", true);
+        enter.setOnClickListener(v -> routeExisting());
+        page.addView(enter, NativeUi.match(this));
+
+        NativeUi.gap(this, page, 12);
+        page.addView(NativeUi.center(
+                this,
+                existingMember
+                        ? "Data akun ditemukan dan siap digunakan."
+                        : "Pendaftaran selesai. Kamu sekarang terdaftar sebagai Member Starpoint Garage.",
+                12,
+                false
+        ), NativeUi.match(this));
+
+        setContentView(NativeUi.scroll(this, page));
     }
 
     private void authStaff(Button submit, JSONObject body) {
