@@ -29,9 +29,9 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.android.gms.codescanner.GmsBarcodeScanner;
-import com.google.android.gms.codescanner.GmsBarcodeScannerOptions;
-import com.google.android.gms.codescanner.GmsBarcodeScanning;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 
 import org.json.JSONArray;
