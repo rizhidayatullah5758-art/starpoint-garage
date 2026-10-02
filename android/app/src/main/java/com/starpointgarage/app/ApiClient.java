@@ -14,8 +14,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public final class ApiClient {
-    public static final String BASE = "https://lscwmlxsvmakhnzknvrr.supabase.co";
-    public static final String KEY = "sb_publishable_xP2C7pPrFpjzbo4WS-C2sw_pYi5hHph";
+    public static final String BASE = "https://msvdxyicostwztisvbvl.supabase.co";
+    public static final String KEY = "sb_publishable_ihIG0dcPUHF9egWHaRlfvQ_E_Bn8zBk";
 
     private ApiClient() {}
 
